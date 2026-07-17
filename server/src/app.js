@@ -3,7 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const errorHandler = require("./middleware/error.middleware");
-
+const authRoutes = require("./modules/auth/auth.routes");
 const app = express();
 
 // Security Middleware
@@ -22,6 +22,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(errorHandler);
+
+app.use("/api/v1/auth", authRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../../utils/jwt");
 const ROLES = require("../../constants/roles");
 
 const userSchema = new mongoose.Schema(
@@ -107,5 +110,20 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
+
+userSchema.methods.generateAccessToken = function () {
+  return generateAccessToken({
+    userId: this._id,
+    companyId: this.company,
+    role: this.role,
+  });
+};
+
+userSchema.methods.generateRefreshToken = function () {
+  return generateRefreshToken({
+    userId: this._id,
+  });
+};
+
 
 module.exports = mongoose.model("User", userSchema);
