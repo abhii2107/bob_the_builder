@@ -1,0 +1,7 @@
+const SUBSCRIPTION_PLANS = {
+  FREE: "FREE",
+  PRO: "PRO",
+  ENTERPRISE: "ENTERPRISE",
+};
+
+module.exports = SUBSCRIPTION_PLANS;

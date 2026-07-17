@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const errorHandler = require("./middleware/error.middleware");
 
 const app = express();
 
@@ -20,12 +21,17 @@ app.use(express.json());
 // Parse Form Data
 app.use(express.urlencoded({ extended: true }));
 
+app.use(errorHandler);
+
 // Test Route
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "🚀 BuildOps AI Backend Running Successfully",
+    message: "BuildOps AI Backend Running Successfully",
   });
 });
+
+
+
 
 module.exports = app;

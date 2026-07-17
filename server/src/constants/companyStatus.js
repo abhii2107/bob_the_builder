@@ -1,0 +1,7 @@
+const COMPANY_STATUS = {
+  ACTIVE: "ACTIVE",
+  SUSPENDED: "SUSPENDED",
+  DELETED: "DELETED",
+};
+
+module.exports = COMPANY_STATUS;
