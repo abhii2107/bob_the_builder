@@ -88,21 +88,18 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// indexes which will help in searching users by email, company and role
+// indexes which will help in searching users by company and role
 // 1 means in ascending order, -1 means in descending order
 
-userSchema.index({ email: 1 });
 userSchema.index({ company: 1 });
 userSchema.index({ role: 1 });
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
 
   this.password = await bcrypt.hash(this.password, 12);
-
-  next();
 });
 
 // Instead of putting password comparison logic in controllers, we keep it with the model.

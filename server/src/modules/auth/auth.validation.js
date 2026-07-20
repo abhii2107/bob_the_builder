@@ -30,3 +30,14 @@ exports.registerValidation = [
     .notEmpty()
     .withMessage("Phone number is required"),
 ];
+
+exports.loginValidation = [
+  body("email")
+    .trim()
+    .isEmail()
+    .withMessage("Valid email is required"),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required"),
+];

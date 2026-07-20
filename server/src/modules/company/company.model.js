@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const SUBSCRIPTION_PLANS = require("../../constants/subscriptionPlans");
+const SUBSCRIPTION_PLANS = require("../../constants/subsciptionPlans");
 const COMPANY_STATUS = require("../../constants/companyStatus");
 
 const companySchema = new mongoose.Schema(
@@ -30,32 +30,27 @@ const companySchema = new mongoose.Schema(
     address: {
       street: {
         type: String,
-        required: [true, "Street address is required"],
         trim: true,
       },
 
       city: {
         type: String,
-        required: [true, "City is required"],
         trim: true,
       },
 
       state: {
         type: String,
-        required: [true, "State is required"],
         trim: true,
       },
 
       country: {
         type: String,
-        required: [true, "Country is required"],
         trim: true,
         default: "India",
       },
 
       zipCode: {
         type: String,
-        required: [true, "Zip code is required"],
         trim: true,
       },
     },
