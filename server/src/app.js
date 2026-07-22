@@ -3,7 +3,9 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const errorHandler = require("./middleware/error.middleware");
-const authRoutes = require("./modules/auth/auth.routes");
+const routes = require("./routes");
+
+
 const app = express();
 
 // Security Middleware
@@ -21,9 +23,7 @@ app.use(express.json());
 // Parse Form Data
 app.use(express.urlencoded({ extended: true }));
 
-app.use(errorHandler);
-
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1", routes);
 
 // Test Route
 app.get("/", (req, res) => {
@@ -32,6 +32,8 @@ app.get("/", (req, res) => {
     message: "BuildOps AI Backend Running Successfully",
   });
 });
+
+app.use(errorHandler);
 
 
 

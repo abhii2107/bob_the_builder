@@ -25,3 +25,24 @@ exports.login = asyncHandler(async (req, res) => {
         )
     );
 });
+
+exports.getMe = asyncHandler(async (req, res) => {
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      "User profile fetched successfully",
+      {
+        id: req.user._id,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        email: req.user.email,
+        phone: req.user.phone,
+        role: req.user.role,
+        company: req.user.company,
+        profileImage: req.user.profileImage,
+        isEmailVerified: req.user.isEmailVerified,
+        isActive: req.user.isActive,
+      }
+    )
+  );
+});
