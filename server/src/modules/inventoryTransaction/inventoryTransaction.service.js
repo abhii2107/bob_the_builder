@@ -150,3 +150,40 @@ exports.stockOut = async (
 
   }
 };
+
+exports.getInventoryTransactions = async (
+  inventoryId,
+  companyId
+) => {
+  const transactions =
+    await InventoryTransaction.find({
+      inventory: inventoryId,
+      company: companyId,
+    })
+      .populate(
+        "performedBy",
+        "firstName lastName role"
+      )
+      .sort({ createdAt: -1 });
+
+  return transactions;
+};
+
+exports.getProjectTransactions = async (
+  projectId,
+  companyId
+) => {
+  return InventoryTransaction.find({
+    project: projectId,
+    company: companyId,
+  })
+    .populate(
+      "inventory",
+      "materialName materialCode"
+    )
+    .populate(
+      "performedBy",
+      "firstName lastName"
+    )
+    .sort({ createdAt: -1 });
+};

@@ -48,3 +48,41 @@ exports.stockOut = asyncHandler(
 
   }
 );
+
+exports.getInventoryTransactions =
+asyncHandler(async (req, res) => {
+
+  const transactions =
+    await inventoryTransactionService.getInventoryTransactions(
+      req.params.inventoryId,
+      req.user.company
+    );
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      "Inventory transaction history fetched successfully",
+      transactions
+    )
+  );
+
+});
+
+exports.getProjectTransactions =
+asyncHandler(async (req, res) => {
+
+  const transactions =
+    await inventoryTransactionService.getProjectTransactions(
+      req.params.projectId,
+      req.user.company
+    );
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      "Project transactions fetched successfully",
+      transactions
+    )
+  );
+
+});

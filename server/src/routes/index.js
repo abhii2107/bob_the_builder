@@ -11,6 +11,8 @@ const inventoryRoutes =
 require("../modules/inventory/inventory.routes");
 const inventoryTransactionRoutes =
 require("../modules/inventoryTransaction/inventoryTransaction.routes");
+const dashboardRoutes =
+require("../modules/dashboard/dashboard.routes");
 
 
 router.use("/auth", authRoutes);
@@ -25,4 +27,7 @@ router.use(
   "/inventory-transactions",
   inventoryTransactionRoutes
 );
+
+router.use("/dashboard", dashboardRoutes);
+
 module.exports = router;

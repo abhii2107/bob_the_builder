@@ -46,4 +46,26 @@ router.post(
   inventoryTransactionController.stockOut
 );
 
+router.get(
+  "/inventory/:inventoryId",
+  protect,
+  authorize(
+    ROLES.OWNER,
+    ROLES.STORE_MANAGER,
+    ROLES.PROJECT_MANAGER
+  ),
+  inventoryTransactionController.getInventoryTransactions
+);
+
+router.get(
+  "/project/:projectId",
+  protect,
+  authorize(
+    ROLES.OWNER,
+    ROLES.PROJECT_MANAGER,
+    ROLES.STORE_MANAGER
+  ),
+  inventoryTransactionController.getProjectTransactions
+);
+
 module.exports = router;
