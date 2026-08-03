@@ -1,0 +1,38 @@
+router.get(
+  "/project/:projectId",
+  protect,
+  authorize(
+    ROLES.OWNER,
+    ROLES.PROJECT_MANAGER,
+    ROLES.SITE_ENGINEER
+  ),
+  attendanceController.getProjectAttendance
+);
+router.get(
+  "/employee/:employeeId",
+  protect,
+  authorize(
+    ROLES.OWNER,
+    ROLES.PROJECT_MANAGER,
+    ROLES.SITE_ENGINEER
+  ),
+  attendanceController.getEmployeeAttendance
+);
+router.patch(
+  "/:id",
+  protect,
+  authorize(
+    ROLES.OWNER,
+    ROLES.PROJECT_MANAGER
+  ),
+  updateAttendanceValidation,
+  validate,
+  attendanceController.updateAttendance
+);
+
+router.delete(
+  "/:id",
+  protect,
+  authorize(ROLES.OWNER),
+  attendanceController.deleteAttendance
+);

@@ -1,0 +1,25 @@
+const MATERIAL_CATEGORY = {
+
+  CEMENT:"CEMENT",
+
+  STEEL:"STEEL",
+
+  BRICKS:"BRICKS",
+
+  SAND:"SAND",
+
+  AGGREGATE:"AGGREGATE",
+
+  PIPE:"PIPE",
+
+  ELECTRICAL:"ELECTRICAL",
+
+  PAINT:"PAINT",
+
+  WOOD:"WOOD",
+
+  OTHER:"OTHER",
+
+};
+
+module.exports = MATERIAL_CATEGORY;
