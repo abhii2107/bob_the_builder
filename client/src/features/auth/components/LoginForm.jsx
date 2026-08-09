@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import toast from "react-hot-toast";
-
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { loginUser } from "../services/authServices";
 
 function LoginForm() {
+
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,15 +32,34 @@ function LoginForm() {
         password,
       });
 
-      console.log("LOGIN RESPONSE:", response);
+      const data = response.data;
+
+      localStorage.setItem(
+        "accessToken",
+        data.accessToken
+      );
+
+      localStorage.setItem(
+        "refreshToken",
+        data.refreshToken
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
 
       toast.success("Login successful!");
+
+      navigate("/dashboard", {
+        replace: true,
+      });
     } catch (error) {
       console.error("LOGIN ERROR:", error);
 
       toast.error(
         error.response?.data?.message ||
-          "Login failed. Please try again."
+        "Login failed. Please try again."
       );
     } finally {
       setLoading(false);

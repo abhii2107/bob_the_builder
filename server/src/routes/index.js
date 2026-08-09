@@ -6,7 +6,7 @@ const authRoutes = require("../modules/auth/auth.routes");
 const companyRoutes = require("../modules/company/company.routes"); 
 const userRoutes = require("../modules/user/user.routes");
 const projectRoutes = require("../modules/project/project.routes");
-const assignmentRoutes = require("../modules/projectAssignment/assignment.routes");
+const assignmentRoutes = require("../modules/projectAssignment/assignment.route");
 const inventoryRoutes =
 require("../modules/inventory/inventory.routes");
 const inventoryTransactionRoutes =
