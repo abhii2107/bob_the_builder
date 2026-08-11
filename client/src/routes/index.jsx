@@ -6,8 +6,10 @@ import {
 } from "react-router-dom";
 
 import AppLayout from "@/components/layout/AppLayout";
+
 import LoginPage from "@/features/auth/pages/LoginPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
+import ProjectsPage from "@/features/projects/pages/ProjectPage";
 
 import ProtectedRoute from "./ProtectedRoutes";
 
@@ -24,6 +26,7 @@ function AppRoutes() {
         {/* Protected */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
+            {/* Root */}
             <Route
               path="/"
               element={
@@ -34,9 +37,16 @@ function AppRoutes() {
               }
             />
 
+            {/* Dashboard */}
             <Route
               path="/dashboard"
               element={<DashboardPage />}
+            />
+
+            {/* Projects */}
+            <Route
+              path="/projects"
+              element={<ProjectsPage />}
             />
           </Route>
         </Route>

@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { setAuth } from "@/store/authStore";
 import { loginUser } from "../services/authServices";
 
 function LoginForm() {
@@ -48,6 +48,8 @@ function LoginForm() {
         "user",
         JSON.stringify(data.user)
       );
+
+      setAuth(data.user);
 
       toast.success("Login successful!");
 

@@ -7,61 +7,106 @@ import {
   CalendarDays,
 } from "lucide-react";
 
+import { useDashboard } from "../hooks/useDashboard";
+
 import { Card, CardContent } from "@/components/ui/card";
 
-const stats = [
-  {
-    title: "Active Projects",
-    value: "12",
-    change: "+2 this month",
-    icon: FolderKanban,
-    iconClass: "bg-blue-50 text-blue-600",
-  },
-  {
-    title: "Employees",
-    value: "54",
-    change: "+6 this month",
-    icon: Users,
-    iconClass: "bg-violet-50 text-violet-600",
-  },
-  {
-    title: "Present Today",
-    value: "47",
-    change: "87% attendance",
-    icon: ClipboardCheck,
-    iconClass: "bg-emerald-50 text-emerald-600",
-  },
-  {
-    title: "Low Stock Items",
-    value: "6",
-    change: "Needs attention",
-    icon: AlertTriangle,
-    iconClass: "bg-amber-50 text-amber-600",
-  },
-];
-
-const projects = [
-  {
-    name: "Metro Station Phase 2",
-    code: "PRJ-0001",
-    status: "Planning",
-    progress: 18,
-  },
-  {
-    name: "Highway Expansion",
-    code: "PRJ-0002",
-    status: "In Progress",
-    progress: 64,
-  },
-  {
-    name: "Residential Complex",
-    code: "PRJ-0003",
-    status: "In Progress",
-    progress: 42,
-  },
-];
-
 function DashboardPage() {
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+  } = useDashboard();
+
+  const overview = data?.data;
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-48 animate-pulse rounded-lg bg-slate-200" />
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-36 animate-pulse rounded-xl border border-slate-200 bg-white"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6">
+        <h2 className="font-semibold text-red-900">
+          Unable to load dashboard
+        </h2>
+
+        <p className="mt-1 text-sm text-red-700">
+          {error?.response?.data?.message ||
+            "Something went wrong. Please try again."}
+        </p>
+      </div>
+    );
+  }
+
+  const totalEmployees = overview?.totalEmployees ?? 0;
+  const totalProjects = overview?.totalProjects ?? 0;
+  const activeProjects = overview?.activeProjects ?? 0;
+  const presentToday = overview?.presentToday ?? 0;
+  const lowStockItems = overview?.lowStockItems ?? 0;
+
+  const attendancePercentage =
+    totalEmployees > 0
+      ? Math.round(
+          (presentToday / totalEmployees) * 100
+        )
+      : 0;
+
+  const projectPercentage =
+    totalProjects > 0
+      ? Math.round(
+          (activeProjects / totalProjects) * 100
+        )
+      : 0;
+
+  const stats = [
+    {
+      title: "Active Projects",
+      value: activeProjects,
+      change: `${totalProjects} total projects`,
+      icon: FolderKanban,
+      iconClass: "bg-blue-50 text-blue-600",
+    },
+    {
+      title: "Employees",
+      value: totalEmployees,
+      change: "Active employees",
+      icon: Users,
+      iconClass: "bg-violet-50 text-violet-600",
+    },
+    {
+      title: "Present Today",
+      value: presentToday,
+      change: `${attendancePercentage}% attendance`,
+      icon: ClipboardCheck,
+      iconClass: "bg-emerald-50 text-emerald-600",
+    },
+    {
+      title: "Low Stock Items",
+      value: lowStockItems,
+      change:
+        lowStockItems > 0
+          ? "Needs attention"
+          : "Stock levels are healthy",
+      icon: AlertTriangle,
+      iconClass: "bg-amber-50 text-amber-600",
+    },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -136,78 +181,56 @@ function DashboardPage() {
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
               <div>
                 <h2 className="text-sm font-semibold text-slate-900">
-                  Recent Projects
+                  Projects
                 </h2>
 
                 <p className="mt-0.5 text-xs text-slate-500">
-                  Current project progress
+                  Current project overview
                 </p>
               </div>
-
-              <button
-                type="button"
-                className="text-xs font-medium text-blue-600 transition-colors hover:text-blue-700"
-              >
-                View all
-              </button>
             </div>
 
-            <div className="divide-y divide-slate-100">
-              {projects.map((project) => (
-                <div
-                  key={project.code}
-                  className="px-5 py-4 transition-colors hover:bg-slate-50"
-                >
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-slate-900">
-                        {project.name}
-                      </p>
+            <div className="px-5 py-8">
+              <div className="flex flex-col items-center justify-center text-center">
+                <FolderKanban className="h-8 w-8 text-slate-300" />
 
-                      <p className="mt-1 text-xs text-slate-400">
-                        {project.code}
-                      </p>
-                    </div>
+                <p className="mt-3 text-sm font-medium text-slate-700">
+                  Project details coming next
+                </p>
 
-                    <span
-                      className={[
-                        "w-fit rounded-full px-2.5 py-1 text-[11px] font-medium",
-                        project.status === "Planning"
-                          ? "bg-slate-100 text-slate-600"
-                          : "bg-blue-50 text-blue-700",
-                      ].join(" ")}
-                    >
-                      {project.status}
-                    </span>
+                <p className="mt-1 max-w-sm text-xs leading-5 text-slate-400">
+                  Your dashboard API currently provides project
+                  counts. We'll connect the recent projects list
+                  after integrating the Projects API.
+                </p>
+
+                <div className="mt-5 grid w-full max-w-sm grid-cols-2 gap-3">
+                  <div className="rounded-lg bg-slate-50 p-3 text-left">
+                    <p className="text-xs text-slate-400">
+                      Total
+                    </p>
+
+                    <p className="mt-1 text-lg font-semibold text-slate-900">
+                      {totalProjects}
+                    </p>
                   </div>
 
-                  <div className="mt-3">
-                    <div className="mb-1.5 flex justify-between text-[11px]">
-                      <span className="text-slate-400">
-                        Progress
-                      </span>
+                  <div className="rounded-lg bg-blue-50 p-3 text-left">
+                    <p className="text-xs text-blue-500">
+                      Active
+                    </p>
 
-                      <span className="font-medium text-slate-600">
-                        {project.progress}%
-                      </span>
-                    </div>
-
-                    <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
-                      <div
-                        className="h-full rounded-full bg-blue-600 transition-all duration-500"
-                        style={{
-                          width: `${project.progress}%`,
-                        }}
-                      />
-                    </div>
+                    <p className="mt-1 text-lg font-semibold text-blue-700">
+                      {activeProjects}
+                    </p>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Quick Summary */}
+        {/* Today's Summary */}
         <Card className="border-slate-200 bg-white shadow-none">
           <CardContent className="p-5">
             <h2 className="text-sm font-semibold text-slate-900">
@@ -221,20 +244,26 @@ function DashboardPage() {
             <div className="mt-5 space-y-4">
               <SummaryItem
                 label="Employees present"
-                value="47 / 54"
-                percentage="87%"
+                value={`${presentToday} / ${totalEmployees}`}
+                percentage={`${attendancePercentage}%`}
               />
 
               <SummaryItem
                 label="Projects active"
-                value="8 / 12"
-                percentage="67%"
+                value={`${activeProjects} / ${totalProjects}`}
+                percentage={`${projectPercentage}%`}
               />
 
               <SummaryItem
-                label="Pending approvals"
-                value="4"
-                percentage="Action"
+                label="Stock received"
+                value={overview?.todayStockIn ?? 0}
+                percentage="Today"
+              />
+
+              <SummaryItem
+                label="Stock issued"
+                value={overview?.todayStockOut ?? 0}
+                percentage="Today"
               />
             </div>
           </CardContent>
@@ -244,7 +273,11 @@ function DashboardPage() {
   );
 }
 
-function SummaryItem({ label, value, percentage }) {
+function SummaryItem({
+  label,
+  value,
+  percentage,
+}) {
   return (
     <div>
       <div className="flex items-center justify-between gap-3">

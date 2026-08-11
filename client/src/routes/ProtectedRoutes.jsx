@@ -1,11 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
+import { useAuthStore } from "@/store/authStore";
+
 function ProtectedRoute() {
   const location = useLocation();
 
-  const accessToken = localStorage.getItem("accessToken");
+  const { isAuthenticated } = useAuthStore();
 
-  if (!accessToken) {
+  if (!isAuthenticated) {
     return (
       <Navigate
         to="/login"

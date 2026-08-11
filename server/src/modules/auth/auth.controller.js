@@ -26,6 +26,25 @@ exports.login = asyncHandler(async (req, res) => {
     );
 });
 
+
+exports.refresh = asyncHandler(async (req, res) => {
+    const { refreshToken } = req.body;
+
+    const result =
+        await authService.refreshAccessToken(
+            refreshToken
+        );
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            "Access token refreshed successfully",
+            result
+        )
+    );
+});
+
+
 exports.getMe = asyncHandler(async (req, res) => {
   return res.status(200).json(
     new ApiResponse(
@@ -45,4 +64,22 @@ exports.getMe = asyncHandler(async (req, res) => {
       }
     )
   );
+});
+
+exports.changePassword = asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    const result = await authService.changePassword(
+        req.user._id,
+        currentPassword,
+        newPassword
+    );
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            "Password changed successfully",
+            result
+        )
+    );
 });

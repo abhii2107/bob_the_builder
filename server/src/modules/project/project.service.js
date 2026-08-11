@@ -1,5 +1,5 @@
 const Project = require("./project.model");
-
+const ApiError = require("../../utils/ApiError");
 exports.createProject = async (data, companyId, userId) => {
 
   const count = await Project.countDocuments({ company: companyId });

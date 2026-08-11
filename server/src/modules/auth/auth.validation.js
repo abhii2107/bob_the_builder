@@ -41,3 +41,10 @@ exports.loginValidation = [
     .notEmpty()
     .withMessage("Password is required"),
 ];
+
+exports.refreshTokenValidation = [
+    body("refreshToken")
+        .trim()
+        .notEmpty()
+        .withMessage("Refresh token is required"),
+];

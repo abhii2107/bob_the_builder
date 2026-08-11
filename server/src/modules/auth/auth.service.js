@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const jwt = require("jsonwebtoken");
 const ROLES = require("../../constants/roles");
 
 const Company = require("../company/company.model");
@@ -148,6 +148,86 @@ class AuthService {
             refreshToken,
         };
     }
+
+    async refreshAccessToken(refreshToken) {
+        if (!refreshToken) {
+            throw new ApiError(
+                401,
+                "Refresh token is required"
+            );
+        }
+
+        let decoded;
+
+        try {
+            decoded = jwt.verify(
+                refreshToken,
+                process.env.JWT_REFRESH_SECRET
+            );
+        } catch (error) {
+            throw new ApiError(
+                401,
+                "Invalid or expired refresh token"
+            );
+        }
+
+        const user = await User.findById(decoded.userId)
+            .select("+refreshToken");
+
+        if (!user) {
+            throw new ApiError(
+                401,
+                "User not found"
+            );
+        }
+
+        if (!user.isActive) {
+            throw new ApiError(
+                403,
+                "Your account has been disabled"
+            );
+        }
+
+        // Make sure the refresh token belongs to this user
+        if (user.refreshToken !== refreshToken) {
+            throw new ApiError(
+                401,
+                "Invalid refresh token"
+            );
+        }
+
+        const accessToken = user.generateAccessToken();
+
+        return {
+            accessToken,
+        };
+    }
+    async changePassword(userId, currentPassword, newPassword) {
+    const user = await User.findById(userId).select("+password");
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    const isPasswordValid =
+        await user.comparePassword(currentPassword);
+
+    if (!isPasswordValid) {
+        throw new ApiError(
+            401,
+            "Current password is incorrect"
+        );
+    }
+
+    user.password = newPassword;
+    user.refreshToken = null;
+
+    await user.save();
+
+    return {
+        message: "Password changed successfully",
+    };
+}
 }
 
 module.exports = new AuthService();
