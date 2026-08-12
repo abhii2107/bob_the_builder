@@ -20,3 +20,12 @@ export const createProject = async (projectData) => {
 
   return response.data;
 };
+
+export const updateProject = async (id, data) => {
+  const response = await api.patch(
+    `/projects/${id}`,
+    data
+  );
+
+  return response.data;
+};

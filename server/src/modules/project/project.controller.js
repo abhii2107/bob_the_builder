@@ -49,3 +49,22 @@ exports.getProjectById = asyncHandler(async (req, res) => {
     )
   );
 });
+
+exports.updateProject = asyncHandler(
+  async (req, res) => {
+    const project =
+      await projectService.updateProject(
+        req.params.id,
+        req.user.company,
+        req.body
+      );
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        "Project updated successfully",
+        project
+      )
+    );
+  }
+);

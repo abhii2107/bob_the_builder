@@ -42,3 +42,57 @@ exports.createProjectValidation = [
     .isISO8601()
     .withMessage("Invalid estimated end date"),
 ];
+
+exports.updateProjectValidation = [
+  body("projectName")
+    .optional()
+    .trim()
+    .isLength({ min: 3, max: 100 })
+    .withMessage(
+      "Project name must be between 3 and 100 characters"
+    ),
+
+  body("description")
+    .optional()
+    .trim(),
+
+  body("projectManager")
+    .optional()
+    .isMongoId()
+    .withMessage("Invalid project manager id"),
+
+  body("siteEngineers")
+    .optional()
+    .isArray()
+    .withMessage("Site engineers must be an array"),
+
+  body("siteEngineers.*")
+    .optional()
+    .isMongoId()
+    .withMessage("Invalid engineer id"),
+
+  body("budget")
+    .optional()
+    .isNumeric()
+    .withMessage("Budget must be a number"),
+
+  body("status")
+    .optional()
+    .isString()
+    .withMessage("Invalid project status"),
+
+  body("startDate")
+    .optional()
+    .isISO8601()
+    .withMessage("Invalid start date"),
+
+  body("estimatedEndDate")
+    .optional()
+    .isISO8601()
+    .withMessage("Invalid estimated end date"),
+
+  body("actualEndDate")
+    .optional()
+    .isISO8601()
+    .withMessage("Invalid actual end date"),
+];

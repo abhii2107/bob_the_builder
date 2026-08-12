@@ -6,6 +6,7 @@ const projectController = require("./project.controller");
 
 const {
   createProjectValidation,
+  updateProjectValidation,
 } = require("./project.validation");
 
 const validate = require("../../middleware/validate.middleware");
@@ -38,6 +39,7 @@ router.get(
   ),
   projectController.getAllProjects
 );
+
 router.get(
   "/:id",
   protect,
@@ -47,6 +49,18 @@ router.get(
     ROLES.SITE_ENGINEER
   ),
   projectController.getProjectById
+);
+
+router.patch(
+  "/:id",
+  protect,
+  authorize(
+    ROLES.OWNER,
+    ROLES.PROJECT_MANAGER
+  ),
+  updateProjectValidation,
+  validate,
+  projectController.updateProject
 );
 
 module.exports = router;

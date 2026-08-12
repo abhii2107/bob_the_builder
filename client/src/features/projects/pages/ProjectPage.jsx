@@ -6,12 +6,13 @@ import {
   Users,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import { useProjects } from "../hooks/useProjects";
+import CreateProjectDialog from "../components/CreateProjectDialog";
 
 function ProjectsPage() {
   const [search, setSearch] = useState("");
@@ -65,10 +66,11 @@ function ProjectsPage() {
           </p>
         </div>
 
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" />
-          New Project
-        </Button>
+        <CreateProjectDialog
+          onCreated={() => {
+            window.location.reload();
+          }}
+        />
       </section>
 
       {/* Search + count */}
@@ -150,10 +152,11 @@ function ProjectsPage() {
               </p>
 
               {!search && (
-                <Button className="mt-5 bg-blue-600 hover:bg-blue-700">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create Project
-                </Button>
+                <CreateProjectDialog
+                  onCreated={() => {
+                    window.location.reload();
+                  }}
+                />
               )}
             </CardContent>
           </Card>
@@ -185,8 +188,8 @@ function ProjectCard({ project }) {
     project.status === "IN_PROGRESS"
       ? "In Progress"
       : project.status?.charAt(0) +
-        project.status?.slice(1).toLowerCase();
-
+      project.status?.slice(1).toLowerCase();
+    const navigate = useNavigate();
   return (
     <Card className="border-slate-200 bg-white shadow-none transition-shadow duration-200 hover:shadow-sm">
       <CardContent className="p-5">
@@ -259,6 +262,7 @@ function ProjectCard({ project }) {
           <Button
             variant="ghost"
             className="text-sm text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+            onClick={() => navigate(`/projects/${project._id}`)}
           >
             View details
           </Button>
@@ -297,10 +301,9 @@ function StatusBadge({ status, label }) {
 
   return (
     <span
-      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium capitalize ${
-        styles[status] ||
+      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium capitalize ${styles[status] ||
         "bg-slate-100 text-slate-600"
-      }`}
+        }`}
     >
       {label || "Unknown"}
     </span>

@@ -10,7 +10,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import ProjectsPage from "@/features/projects/pages/ProjectPage";
-
+import ProjectDetailsPage from "@/features/projects/pages/ProjectDetailsPage";
 import ProtectedRoute from "./ProtectedRoutes";
 
 function AppRoutes() {
@@ -49,6 +49,12 @@ function AppRoutes() {
               element={<ProjectsPage />}
             />
           </Route>
+
+          {/* Project Details */}
+          <Route
+            path="/projects/:id"
+            element={<ProjectDetailsPage />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

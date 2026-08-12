@@ -41,3 +41,58 @@ exports.getProjectById = async (projectId, companyId) => {
 
   return project;
 };
+
+exports.updateProject = async (
+  projectId,
+  companyId,
+  data
+) => {
+  const allowedFields = [
+    "projectName",
+    "description",
+    "projectManager",
+    "siteEngineers",
+    "budget",
+    "status",
+    "startDate",
+    "estimatedEndDate",
+    "actualEndDate",
+    "address",
+  ];
+
+  const updateData = {};
+
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      updateData[field] = data[field];
+    }
+  }
+
+  const project = await Project.findOneAndUpdate(
+    {
+      _id: projectId,
+      company: companyId,
+    },
+    {
+      $set: updateData,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+    .populate(
+      "projectManager",
+      "firstName lastName email"
+    )
+    .populate(
+      "siteEngineers",
+      "firstName lastName email"
+    );
+
+  if (!project) {
+    throw new ApiError(404, "Project not found");
+  }
+
+  return project;
+};
