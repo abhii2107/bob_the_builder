@@ -17,7 +17,7 @@ export const createProject = async (projectData) => {
     "/projects",
     projectData
   );
-
+  
   return response.data;
 };
 

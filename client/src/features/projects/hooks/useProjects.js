@@ -15,7 +15,7 @@ export function useProjects() {
     queryKey: ["projects"],
     queryFn: getProjects,
   });
-}
+} 
 
 export function useProject(projectId) {
   return useQuery({

@@ -9,7 +9,7 @@ import {
 import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
+import EditProjectDialog from "../components/EditProjectDialog";
 import { useProject } from "../hooks/useProjects";
 
 function ProjectDetailsPage() {
@@ -99,15 +99,7 @@ function ProjectDetailsPage() {
                 </div>
 
                 {/* Edit Project */}
-                <Button
-                    variant="outline"
-                    onClick={() => {
-                        // We will connect the Edit dialog here next
-                    }}
-                >
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit Project
-                </Button>
+                <EditProjectDialog project={project} />
             </div>
 
             {/* Overview */}
