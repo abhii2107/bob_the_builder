@@ -29,7 +29,6 @@ exports.createUser = async (data, companyId) => {
 exports.getUsers = async (companyId) => {
   const users = await User.find({
     company: companyId,
-    isActive: true,
   })
     .select("-password -refreshToken")
     .sort({ createdAt: -1 });

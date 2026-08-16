@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import AppLayout from "@/components/layout/AppLayout";
-
+import UsersPage from "@/features/users/pages/UsersPage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import ProjectsPage from "@/features/projects/pages/ProjectPage";
@@ -56,6 +56,11 @@ function AppRoutes() {
             element={<ProjectDetailsPage />}
           />
         </Route>
+        {/* users */}
+        <Route
+          path="/users"
+          element={<UsersPage />}
+        />
       </Routes>
     </BrowserRouter>
   );

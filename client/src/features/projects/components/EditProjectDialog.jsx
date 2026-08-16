@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { useUpdateProject } from "../hooks/useProjects";
+import { useUsers } from "@/features/users/hooks/useUsers";
 
 function EditProjectDialog({ project }) {
   const [open, setOpen] = useState(false);
@@ -24,25 +25,52 @@ function EditProjectDialog({ project }) {
     startDate: "",
     estimatedEndDate: "",
     status: "PLANNING",
+    projectManager: "",
+    siteEngineers: [],
   });
 
   const updateProjectMutation = useUpdateProject();
 
+  const {
+    data: usersData,
+    isLoading: usersLoading,
+  } = useUsers();
+
+  const users = usersData?.data ?? [];
+
+  const projectManagers = users.filter(
+    (user) => user.role === "PROJECT_MANAGER"
+  );
+
+  const availableSiteEngineers = users.filter(
+    (user) => user.role === "SITE_ENGINEER"
+  );
+
   useEffect(() => {
-    if (project) {
-      setForm({
-        projectName: project.projectName || "",
-        description: project.description || "",
-        budget: project.budget || "",
-        startDate: project.startDate
-          ? project.startDate.slice(0, 10)
-          : "",
-        estimatedEndDate: project.estimatedEndDate
-          ? project.estimatedEndDate.slice(0, 10)
-          : "",
-        status: project.status || "PLANNING",
-      });
-    }
+    if (!project) return;
+
+    setForm({
+      projectName: project.projectName || "",
+      description: project.description || "",
+      budget: project.budget ?? "",
+      startDate: project.startDate
+        ? project.startDate.slice(0, 10)
+        : "",
+      estimatedEndDate: project.estimatedEndDate
+        ? project.estimatedEndDate.slice(0, 10)
+        : "",
+      status: project.status || "PLANNING",
+
+      projectManager:
+        project.projectManager?._id ||
+        project.projectManager ||
+        "",
+
+      siteEngineers:
+        project.siteEngineers?.map(
+          (engineer) => engineer._id || engineer
+        ) || [],
+    });
   }, [project]);
 
   const handleChange = (event) => {
@@ -51,6 +79,18 @@ function EditProjectDialog({ project }) {
     setForm((previous) => ({
       ...previous,
       [name]: value,
+    }));
+  };
+
+  const handleEngineerChange = (event) => {
+    const selectedEngineers = Array.from(
+      event.target.selectedOptions,
+      (option) => option.value
+    );
+
+    setForm((previous) => ({
+      ...previous,
+      siteEngineers: selectedEngineers,
     }));
   };
 
@@ -65,14 +105,20 @@ function EditProjectDialog({ project }) {
     try {
       await updateProjectMutation.mutateAsync({
         id: project._id,
+
         data: {
-          projectName: form.projectName,
+          projectName: form.projectName.trim(),
           description: form.description,
           budget: Number(form.budget) || 0,
           startDate: form.startDate || undefined,
           estimatedEndDate:
             form.estimatedEndDate || undefined,
           status: form.status,
+
+          projectManager:
+            form.projectManager || null,
+
+          siteEngineers: form.siteEngineers,
         },
       });
 
@@ -95,12 +141,16 @@ function EditProjectDialog({ project }) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Edit Project</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+        >
+          {/* Project Name */}
           <div>
             <label className="text-sm font-medium text-slate-700">
               Project Name
@@ -114,6 +164,7 @@ function EditProjectDialog({ project }) {
             />
           </div>
 
+          {/* Description */}
           <div>
             <label className="text-sm font-medium text-slate-700">
               Description
@@ -128,6 +179,7 @@ function EditProjectDialog({ project }) {
             />
           </div>
 
+          {/* Budget */}
           <div>
             <label className="text-sm font-medium text-slate-700">
               Budget
@@ -136,12 +188,14 @@ function EditProjectDialog({ project }) {
             <Input
               name="budget"
               type="number"
+              min="0"
               value={form.budget}
               onChange={handleChange}
               className="mt-1"
             />
           </div>
 
+          {/* Dates */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="text-sm font-medium text-slate-700">
@@ -172,6 +226,66 @@ function EditProjectDialog({ project }) {
             </div>
           </div>
 
+          {/* Project Manager */}
+          <div>
+            <label className="text-sm font-medium text-slate-700">
+              Project Manager
+            </label>
+
+            <select
+              name="projectManager"
+              value={form.projectManager}
+              onChange={handleChange}
+              disabled={usersLoading}
+              className="mt-1 h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm"
+            >
+              <option value="">
+                {usersLoading
+                  ? "Loading employees..."
+                  : "Select project manager"}
+              </option>
+
+              {projectManagers.map((user) => (
+                <option
+                  key={user._id}
+                  value={user._id}
+                >
+                  {user.firstName} {user.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Site Engineers */}
+          <div>
+            <label className="text-sm font-medium text-slate-700">
+              Site Engineers
+            </label>
+
+            <select
+              multiple
+              value={form.siteEngineers}
+              onChange={handleEngineerChange}
+              disabled={usersLoading}
+              className="mt-1 min-h-28 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
+            >
+              {availableSiteEngineers.map((user) => (
+                <option
+                  key={user._id}
+                  value={user._id}
+                >
+                  {user.firstName} {user.lastName}
+                </option>
+              ))}
+            </select>
+
+            <p className="mt-1 text-xs text-slate-400">
+              Hold Ctrl on Windows or Command on Mac to
+              select multiple engineers.
+            </p>
+          </div>
+
+          {/* Status */}
           <div>
             <label className="text-sm font-medium text-slate-700">
               Status
@@ -187,17 +301,25 @@ function EditProjectDialog({ project }) {
               <option value="IN_PROGRESS">
                 In Progress
               </option>
-              <option value="COMPLETED">Completed</option>
-              <option value="ON_HOLD">On Hold</option>
-              <option value="CANCELLED">Cancelled</option>
+              <option value="COMPLETED">
+                Completed
+              </option>
+              <option value="ON_HOLD">
+                On Hold
+              </option>
+              <option value="CANCELLED">
+                Cancelled
+              </option>
             </select>
           </div>
 
+          {/* Actions */}
           <div className="flex justify-end gap-2 pt-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
+              disabled={updateProjectMutation.isPending}
             >
               Cancel
             </Button>
