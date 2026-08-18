@@ -1,29 +1,74 @@
-const { body } = require("express-validator");
-const ROLES = require("../../constants/roles");
+const mongoose = require("mongoose");
 
-exports.createAssignmentValidation = [
-  body("employee")
-    .notEmpty()
-    .withMessage("Employee is required")
-    .isMongoId()
-    .withMessage("Invalid employee id"),
+const assignmentSchema = new mongoose.Schema(
+  {
+    employee: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-  body("project")
-    .notEmpty()
-    .withMessage("Project is required")
-    .isMongoId()
-    .withMessage("Invalid project id"),
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      required: true,
+    },
 
-  body("assignedRole")
-    .notEmpty()
-    .withMessage("Assigned role is required")
-    .isIn([
-      ROLES.PROJECT_MANAGER,
-      ROLES.SITE_ENGINEER,
-      ROLES.STORE_MANAGER,
-      ROLES.ACCOUNTANT,
-      ROLES.WORKER,
-      ROLES.CLIENT,
-    ])
-    .withMessage("Invalid role"),
-];
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      required: true,
+    },
+
+    assignedRole: {
+      type: String,
+      required: true,
+    },
+
+    assignedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    assignedDate: {
+      type: Date,
+      default: Date.now,
+    },
+
+    unassignedDate: {
+      type: Date,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Only one ACTIVE assignment per employee per project
+assignmentSchema.index(
+  {
+    employee: 1,
+    project: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      isActive: true,
+    },
+  }
+);
+
+assignmentSchema.index({ company: 1 });
+assignmentSchema.index({ project: 1 });
+assignmentSchema.index({ employee: 1 });
+
+module.exports = mongoose.model(
+  "ProjectAssignment",
+  assignmentSchema
+);
