@@ -1,3 +1,9 @@
+const attendanceService = require("./attendance.service");
+
+const asyncHandler = require("../../utils/asyncHandler");
+
+const ApiResponse = require("../../utils/ApiResponse");
+
 exports.getProjectAttendance = asyncHandler(async (req, res) => {
   const attendance = await attendanceService.getProjectAttendance(
     req.params.projectId,
@@ -12,6 +18,25 @@ exports.getProjectAttendance = asyncHandler(async (req, res) => {
     )
   );
 });
+
+exports.createAttendance = asyncHandler(
+  async (req, res) => {
+    const attendance =
+      await attendanceService.createAttendance(
+        req.body,
+        req.user.company,
+        req.user._id
+      );
+
+    return res.status(201).json(
+      new ApiResponse(
+        201,
+        "Attendance marked successfully",
+        attendance
+      )
+    );
+  }
+);
 
 exports.getEmployeeAttendance = asyncHandler(async (req, res) => {
   const attendance = await attendanceService.getEmployeeAttendance(

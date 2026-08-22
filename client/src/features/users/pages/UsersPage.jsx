@@ -1,6 +1,6 @@
 import { Users, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-
+import EmployeeProjectsDialog from "../components/EmployeeProjectDialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import EmployeeStatusButton from "../components/EmployeeStatusButton";
@@ -173,8 +173,8 @@ function UsersPage() {
 
                       <div
                         className={`rounded-full px-2.5 py-1 text-xs font-medium ${user.isActive
-                            ? "bg-emerald-50 text-emerald-700"
-                            : "bg-slate-100 text-slate-500"
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "bg-slate-100 text-slate-500"
                           }`}
                       >
                         {user.isActive ? "Active" : "Inactive"}
@@ -182,6 +182,8 @@ function UsersPage() {
                     </div>
 
                     <div className="mt-3 flex justify-end gap-2">
+                      <EmployeeProjectsDialog user={user} />
+
                       <EditEmployeeDialog user={user} />
 
                       <EmployeeStatusButton user={user} />

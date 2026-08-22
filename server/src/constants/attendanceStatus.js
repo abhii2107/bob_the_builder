@@ -1,0 +1,8 @@
+const ATTENDANCE_STATUS = {
+  PRESENT: "PRESENT",
+  ABSENT: "ABSENT",
+  HALF_DAY: "HALF_DAY",
+  LEAVE: "LEAVE",
+};
+
+module.exports = ATTENDANCE_STATUS;
