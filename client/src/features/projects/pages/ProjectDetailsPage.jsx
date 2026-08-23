@@ -31,6 +31,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import EditProjectDialog from "../components/EditProjectDialog";
 import { useProject } from "../hooks/useProjects";
+import EditAttendanceDialog from "../../attendance/components/EditAttendanceDialog";
+
 
 function ProjectDetailsPage() {
     const { id } = useParams();
@@ -553,32 +555,38 @@ function ProjectDetailsPage() {
                                             </div>
 
                                             <div className="flex items-end justify-end">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    disabled={
-                                                        deleteAttendanceMutation.isPending
-                                                    }
-                                                    className="text-xs text-red-600 hover:bg-red-50 hover:text-red-700"
-                                                    onClick={async () => {
-                                                        try {
-                                                            await deleteAttendanceMutation.mutateAsync(
-                                                                record._id
-                                                            );
+                                                <div className="flex items-end justify-end gap-1">
+                                                    <EditAttendanceDialog
+                                                        attendance={record}
+                                                    />
 
-                                                            toast.success(
-                                                                "Attendance deleted successfully."
-                                                            );
-                                                        } catch (error) {
-                                                            toast.error(
-                                                                error?.response?.data?.message ||
-                                                                "Failed to delete attendance."
-                                                            );
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        disabled={
+                                                            deleteAttendanceMutation.isPending
                                                         }
-                                                    }}
-                                                >
-                                                    Delete
-                                                </Button>
+                                                        className="text-xs text-red-600 hover:bg-red-50 hover:text-red-700"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await deleteAttendanceMutation.mutateAsync(
+                                                                    record._id
+                                                                );
+
+                                                                toast.success(
+                                                                    "Attendance deleted successfully."
+                                                                );
+                                                            } catch (error) {
+                                                                toast.error(
+                                                                    error?.response?.data?.message ||
+                                                                    "Failed to delete attendance."
+                                                                );
+                                                            }
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </div>
                                             </div>
                                         </div>
 

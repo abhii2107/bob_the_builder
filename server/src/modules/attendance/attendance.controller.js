@@ -19,6 +19,24 @@ exports.getProjectAttendance = asyncHandler(async (req, res) => {
   );
 });
 
+exports.getCompanyAttendance = asyncHandler(
+  async (req, res) => {
+    const attendance =
+      await attendanceService.getCompanyAttendance(
+        req.user.company,
+        req.query
+      );
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        "Company attendance fetched successfully",
+        attendance
+      )
+    );
+  }
+);
+
 exports.createAttendance = asyncHandler(
   async (req, res) => {
     const attendance =

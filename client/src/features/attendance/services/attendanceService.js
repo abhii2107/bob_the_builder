@@ -48,3 +48,11 @@ export const deleteAttendance = async (id) => {
 
   return response.data;
 };
+
+export const getCompanyAttendance = async (params = {}) => {
+  const response = await api.get("/attendance", {
+    params,
+  });
+
+  return response.data;
+};

@@ -17,6 +17,21 @@ const authorize = require("../../middleware/authorize.middleware");
 
 const ROLES = require("../../constants/roles");
 
+
+// Company Attendance
+router.get(
+  "/",
+  protect,
+  authorize(
+    ROLES.OWNER,
+    ROLES.PROJECT_MANAGER,
+    ROLES.SITE_ENGINEER
+  ),
+  attendanceController.getCompanyAttendance
+);
+
+
+// Project Attendance
 router.get(
   "/project/:projectId",
   protect,
@@ -27,6 +42,9 @@ router.get(
   ),
   attendanceController.getProjectAttendance
 );
+
+
+// Employee Attendance
 router.get(
   "/employee/:employeeId",
   protect,
@@ -37,6 +55,9 @@ router.get(
   ),
   attendanceController.getEmployeeAttendance
 );
+
+
+// Update Attendance
 router.patch(
   "/:id",
   protect,
@@ -49,6 +70,8 @@ router.patch(
   attendanceController.updateAttendance
 );
 
+
+// Delete Attendance
 router.delete(
   "/:id",
   protect,
@@ -56,6 +79,8 @@ router.delete(
   attendanceController.deleteAttendance
 );
 
+
+// Create Attendance
 router.post(
   "/",
   protect,
@@ -67,5 +92,6 @@ router.post(
   validate,
   attendanceController.createAttendance
 );
+
 
 module.exports = router;

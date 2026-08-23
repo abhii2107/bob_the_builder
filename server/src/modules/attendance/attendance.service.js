@@ -111,6 +111,62 @@ exports.createAttendance = async (
     );
 };
 
+exports.getCompanyAttendance = async (
+  companyId,
+  filters = {}
+) => {
+  const {
+    employee,
+    project,
+    status,
+    date,
+  } = filters;
+
+  const query = {
+    company: companyId,
+  };
+
+  if (employee) {
+    query.employee = employee;
+  }
+
+  if (project) {
+    query.project = project;
+  }
+
+  if (status) {
+    query.status = status;
+  }
+
+  if (date) {
+    const startOfDay = new Date(`${date}T00:00:00.000`);
+    const endOfDay = new Date(`${date}T23:59:59.999`);
+
+    query.date = {
+      $gte: startOfDay,
+      $lte: endOfDay,
+    };
+  }
+
+  return Attendance.find(query)
+    .populate(
+      "employee",
+      "firstName lastName email role"
+    )
+    .populate(
+      "project",
+      "projectName projectCode"
+    )
+    .populate(
+      "markedBy",
+      "firstName lastName"
+    )
+    .sort({
+      date: -1,
+      createdAt: -1,
+    });
+};
+
 exports.getProjectAttendance = async (projectId, companyId) => {
   const attendance = await Attendance.find({
     project: projectId,

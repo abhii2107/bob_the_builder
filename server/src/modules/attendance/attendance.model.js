@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const { Schema } = mongoose;
+
 const ATTENDANCE_STATUS = {
   PRESENT: "PRESENT",
   ABSENT: "ABSENT",
@@ -7,28 +9,28 @@ const ATTENDANCE_STATUS = {
   LEAVE: "LEAVE",
 };
 
-const attendanceSchema = new mongoose.Schema(
+const attendanceSchema = new Schema(
   {
     employee: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
     project: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Project",
       required: true,
     },
 
     company: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Company",
       required: true,
     },
 
     markedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -42,22 +44,25 @@ const attendanceSchema = new mongoose.Schema(
       type: String,
       enum: Object.values(ATTENDANCE_STATUS),
       required: true,
+      default: ATTENDANCE_STATUS.PRESENT,
     },
 
     checkIn: {
       type: String,
       default: "",
+      trim: true,
     },
 
     checkOut: {
       type: String,
       default: "",
+      trim: true,
     },
 
     remarks: {
       type: String,
-      trim: true,
       default: "",
+      trim: true,
     },
   },
   {
@@ -68,11 +73,6 @@ const attendanceSchema = new mongoose.Schema(
 attendanceSchema.index({
   company: 1,
   employee: 1,
-  date: 1,
-});
-
-attendanceSchema.index({
-  company: 1,
   project: 1,
   date: 1,
 });

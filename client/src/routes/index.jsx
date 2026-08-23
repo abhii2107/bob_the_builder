@@ -12,7 +12,7 @@ import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import ProjectsPage from "@/features/projects/pages/ProjectPage";
 import ProjectDetailsPage from "@/features/projects/pages/ProjectDetailsPage";
 import ProtectedRoute from "./ProtectedRoutes";
-
+import AttendancePage from "@/features/attendance/pages/AttendancePage";
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -49,6 +49,11 @@ function AppRoutes() {
               element={<ProjectsPage />}
             />
           </Route>
+
+          <Route
+            path="/attendance"
+            element={<AttendancePage />}
+          />
 
           {/* Project Details */}
           <Route

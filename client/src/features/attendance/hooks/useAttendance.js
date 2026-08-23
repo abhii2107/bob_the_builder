@@ -6,6 +6,7 @@ import {
 
 import {
   createAttendance,
+  getCompanyAttendance,
   getProjectAttendance,
   getEmployeeAttendance,
   updateAttendance,
@@ -86,5 +87,12 @@ export function useDeleteAttendance() {
         queryKey: ["employeeAttendance"],
       });
     },
+  });
+}
+
+export function useCompanyAttendance(filters = {}) {
+  return useQuery({
+    queryKey: ["companyAttendance", filters],
+    queryFn: () => getCompanyAttendance(filters),
   });
 }
