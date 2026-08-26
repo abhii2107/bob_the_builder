@@ -1,7 +1,8 @@
 const express = require("express");
 
 const router = express.Router();
-
+const reportRoutes =
+  require("../modules/report/report.routes");
 const authRoutes = require("../modules/auth/auth.routes");
 const companyRoutes = require("../modules/company/company.routes");
 const userRoutes = require("../modules/user/user.routes");
@@ -23,6 +24,8 @@ router.use("/users", userRoutes);
 router.use("/projects", projectRoutes);
 router.use("/assignments", assignmentRoutes);
 router.use("/inventory", inventoryRoutes);
+console.log("Inventory routes loaded:", !!inventoryRoutes);
+console.log("Main API routes loaded");
 router.use(
   "/inventory-transactions",
   inventoryTransactionRoutes
@@ -30,5 +33,7 @@ router.use(
 router.use("/dashboard", dashboardRoutes);
 
 router.use("/attendance", attendanceRoutes);
+
+router.use("/reports", reportRoutes);
 
 module.exports = router;

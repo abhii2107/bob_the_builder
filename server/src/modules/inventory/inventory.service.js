@@ -1,7 +1,11 @@
 const Inventory = require("./inventory.model");
 const Project = require("../project/project.model");
 const ApiError = require("../../utils/ApiError");
-const InventoryTransaction = require("../inventoryTransaction/inventoryTransaction.model");
+const InventoryTransaction = require(
+  "../inventoryTransaction/inventoryTransaction.model"
+);
+
+// Create Inventory
 exports.createInventory = async (
   inventoryData,
   companyId,
@@ -11,7 +15,6 @@ exports.createInventory = async (
   const project = await Project.findOne({
     _id: inventoryData.project,
     company: companyId,
-    isArchived: false,
   }).lean();
 
   if (!project) {
@@ -22,12 +25,13 @@ exports.createInventory = async (
   }
 
   // Check duplicate material
-  const existingMaterial = await Inventory.findOne({
-    company: companyId,
-    project: inventoryData.project,
-    materialName: inventoryData.materialName,
-    isActive: true,
-  }).lean();
+  const existingMaterial =
+    await Inventory.findOne({
+      company: companyId,
+      project: inventoryData.project,
+      materialName: inventoryData.materialName,
+      isActive: true,
+    }).lean();
 
   if (existingMaterial) {
     throw new ApiError(
@@ -114,13 +118,26 @@ exports.stockIn = async (
   });
 
   if (!inventory) {
-    throw new ApiError(404, "Material not found.");
+    throw new ApiError(
+      404,
+      "Material not found."
+    );
+  }
+
+  const quantity = Number(data.quantity);
+
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    throw new ApiError(
+      400,
+      "Stock quantity must be greater than 0."
+    );
   }
 
   const previousStock = inventory.currentStock;
-  const newStock = previousStock + Number(data.quantity);
+  const newStock = previousStock + quantity;
 
   inventory.currentStock = newStock;
+
   await inventory.save();
 
   await InventoryTransaction.create({
@@ -128,14 +145,17 @@ exports.stockIn = async (
     project: inventory.project,
     company: companyId,
     transactionType: "STOCK_IN",
-    quantity: data.quantity,
+    quantity,
     previousStock,
     newStock,
     remarks: data.remarks || "",
     performedBy: userId,
   });
 
-  return inventory.populate("project", "projectName projectCode");
+  return inventory.populate(
+    "project",
+    "projectName projectCode"
+  );
 };
 
 // Stock Out
@@ -152,10 +172,22 @@ exports.stockOut = async (
   });
 
   if (!inventory) {
-    throw new ApiError(404, "Material not found.");
+    throw new ApiError(
+      404,
+      "Material not found."
+    );
   }
 
-  if (inventory.currentStock < data.quantity) {
+  const quantity = Number(data.quantity);
+
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    throw new ApiError(
+      400,
+      "Stock quantity must be greater than 0."
+    );
+  }
+
+  if (inventory.currentStock < quantity) {
     throw new ApiError(
       400,
       "Insufficient stock available."
@@ -163,9 +195,10 @@ exports.stockOut = async (
   }
 
   const previousStock = inventory.currentStock;
-  const newStock = previousStock - Number(data.quantity);
+  const newStock = previousStock - quantity;
 
   inventory.currentStock = newStock;
+
   await inventory.save();
 
   await InventoryTransaction.create({
@@ -173,14 +206,17 @@ exports.stockOut = async (
     project: inventory.project,
     company: companyId,
     transactionType: "STOCK_OUT",
-    quantity: data.quantity,
+    quantity,
     previousStock,
     newStock,
     remarks: data.remarks || "",
     performedBy: userId,
   });
 
-  return inventory.populate("project", "projectName projectCode");
+  return inventory.populate(
+    "project",
+    "projectName projectCode"
+  );
 };
 
 // Transaction History
@@ -194,7 +230,10 @@ exports.getInventoryTransactions = async (
   });
 
   if (!inventory) {
-    throw new ApiError(404, "Material not found.");
+    throw new ApiError(
+      404,
+      "Material not found."
+    );
   }
 
   return InventoryTransaction.find({
@@ -205,5 +244,7 @@ exports.getInventoryTransactions = async (
       "performedBy",
       "firstName lastName role"
     )
-    .sort({ createdAt: -1 });
+    .sort({
+      createdAt: -1,
+    });
 };

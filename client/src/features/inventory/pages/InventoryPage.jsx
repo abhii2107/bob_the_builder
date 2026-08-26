@@ -1,15 +1,16 @@
 import {
   Boxes,
-  Plus,
-  ArrowDownToLine,
-  ArrowUpFromLine,
   AlertTriangle,
 } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 import { useInventory } from "../hooks/useInventory";
+import { useProjects } from "@/features/projects/hooks/useProjects";
+
+import CreateInventoryDialog from "../components/CreateInventoryDialog";
+import StockInDialog from "../components/StockInDialog";
+import StockOutDialog from "../components/StockOutDialog";
 
 function InventoryPage() {
   const {
@@ -19,7 +20,13 @@ function InventoryPage() {
     error,
   } = useInventory();
 
+  const {
+    data: projectsData,
+    isLoading: projectsLoading,
+  } = useProjects();
+
   const inventory = data?.data ?? [];
+  const projects = projectsData?.data ?? [];
 
   return (
     <div className="space-y-6">
@@ -39,10 +46,9 @@ function InventoryPage() {
           </p>
         </div>
 
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Material
-        </Button>
+        <CreateInventoryDialog
+          projects={projects}
+        />
       </section>
 
       {/* Summary */}
@@ -58,8 +64,8 @@ function InventoryPage() {
           value={
             inventory.filter(
               (item) =>
-                item.currentStock <=
-                item.minimumStock
+                Number(item.currentStock) <=
+                Number(item.minimumStock)
             ).length
           }
           icon={AlertTriangle}
@@ -90,6 +96,13 @@ function InventoryPage() {
             </p>
           </CardContent>
         </Card>
+      )}
+
+      {/* Projects loading */}
+      {projectsLoading && (
+        <p className="text-xs text-slate-400">
+          Loading projects...
+        </p>
       )}
 
       {/* Inventory Table */}
@@ -159,14 +172,15 @@ function InventoryPage() {
                 ) : (
                   inventory.map((item) => {
                     const isLowStock =
-                      item.currentStock <=
-                      item.minimumStock;
+                      Number(item.currentStock) <=
+                      Number(item.minimumStock);
 
                     return (
                       <tr
                         key={item._id}
                         className="border-b border-slate-100 last:border-0"
                       >
+                        {/* Material */}
                         <td className="px-5 py-4">
                           <p className="text-sm font-medium text-slate-900">
                             {item.materialName}
@@ -177,22 +191,23 @@ function InventoryPage() {
                           </p>
                         </td>
 
+                        {/* Project */}
                         <td className="px-5 py-4">
                           <p className="text-sm text-slate-700">
-                            {item.project?.projectName ||
-                              "—"}
+                            {item.project?.projectName || "—"}
                           </p>
 
                           <p className="mt-0.5 text-xs text-slate-400">
-                            {item.project?.projectCode ||
-                              ""}
+                            {item.project?.projectCode || ""}
                           </p>
                         </td>
 
+                        {/* Category */}
                         <td className="px-5 py-4 text-sm text-slate-600">
                           {item.category}
                         </td>
 
+                        {/* Current Stock */}
                         <td className="px-5 py-4">
                           <span
                             className={
@@ -209,10 +224,12 @@ function InventoryPage() {
                           </span>
                         </td>
 
+                        {/* Minimum Stock */}
                         <td className="px-5 py-4 text-sm text-slate-600">
                           {item.minimumStock}
                         </td>
 
+                        {/* Status */}
                         <td className="px-5 py-4">
                           {isLowStock ? (
                             <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600">
@@ -226,25 +243,18 @@ function InventoryPage() {
                           )}
                         </td>
 
+                        {/* Actions */}
                         <td className="px-5 py-4">
                           <div className="flex justify-end gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-xs"
-                            >
-                              <ArrowDownToLine className="mr-1 h-3.5 w-3.5" />
-                              In
-                            </Button>
+                            {/* Stock In */}
+                            <StockInDialog
+                              inventory={item}
+                            />
 
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="text-xs"
-                            >
-                              <ArrowUpFromLine className="mr-1 h-3.5 w-3.5" />
-                              Out
-                            </Button>
+                            {/* Stock Out */}
+                            <StockOutDialog
+                              inventory={item}
+                            />
                           </div>
                         </td>
                       </tr>

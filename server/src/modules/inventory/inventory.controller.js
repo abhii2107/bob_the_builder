@@ -1,8 +1,10 @@
 const inventoryService = require("./inventory.service");
 
 const asyncHandler = require("../../utils/asyncHandler");
+
 const ApiResponse = require("../../utils/ApiResponse");
 
+// Create Inventory
 exports.createInventory = asyncHandler(
   async (req, res) => {
     const inventory =
@@ -22,6 +24,7 @@ exports.createInventory = asyncHandler(
   }
 );
 
+// Get company inventory
 exports.getInventory = asyncHandler(
   async (req, res) => {
     const inventory =
@@ -40,55 +43,64 @@ exports.getInventory = asyncHandler(
   }
 );
 
-exports.stockIn = asyncHandler(async (req, res) => {
-  const inventory =
-    await inventoryService.stockIn(
-      req.params.id,
-      req.user.company,
-      req.user._id,
-      req.body
-    );
-
-  return res.status(200).json(
-    new ApiResponse(
-      200,
-      "Stock added successfully",
-      inventory
-    )
-  );
-});
-
-exports.stockOut = asyncHandler(async (req, res) => {
-  const inventory =
-    await inventoryService.stockOut(
-      req.params.id,
-      req.user.company,
-      req.user._id,
-      req.body
-    );
-
-  return res.status(200).json(
-    new ApiResponse(
-      200,
-      "Stock removed successfully",
-      inventory
-    )
-  );
-});
-
-exports.getInventoryTransactions =
-  asyncHandler(async (req, res) => {
-    const transactions =
-      await inventoryService.getInventoryTransactions(
+// Stock In
+exports.stockIn = asyncHandler(
+  async (req, res) => {
+    const inventory =
+      await inventoryService.stockIn(
         req.params.id,
-        req.user.company
+        req.user.company,
+        req.user._id,
+        req.body
       );
 
     return res.status(200).json(
       new ApiResponse(
         200,
-        "Inventory transactions fetched successfully",
-        transactions
+        "Stock added successfully",
+        inventory
       )
     );
-  });
+  }
+);
+
+// Stock Out
+exports.stockOut = asyncHandler(
+  async (req, res) => {
+    const inventory =
+      await inventoryService.stockOut(
+        req.params.id,
+        req.user.company,
+        req.user._id,
+        req.body
+      );
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        "Stock removed successfully",
+        inventory
+      )
+    );
+  }
+);
+
+// Transaction History
+exports.getInventoryTransactions =
+  asyncHandler(
+    async (req, res) => {
+      const transactions =
+        await inventoryService.getInventoryTransactions(
+          req.params.id,
+          req.user.company
+        );
+
+      return res.status(200).json(
+        new ApiResponse(
+          200,
+          "Inventory transactions fetched successfully",
+          transactions
+        )
+      );
+    }
+  );
