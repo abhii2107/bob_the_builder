@@ -6,24 +6,38 @@ import {
 } from "react-router-dom";
 
 import AppLayout from "@/components/layout/AppLayout";
-import UsersPage from "@/features/users/pages/UsersPage";
+
 import LoginPage from "@/features/auth/pages/LoginPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
+import UsersPage from "@/features/users/pages/UsersPage";
+
+import InventoryPage from "@/features/inventory/pages/InventoryPage";
+
 import ProjectsPage from "@/features/projects/pages/ProjectPage";
 import ProjectDetailsPage from "@/features/projects/pages/ProjectDetailsPage";
-import ProtectedRoute from "./ProtectedRoutes";
+
 import AttendancePage from "@/features/attendance/pages/AttendancePage";
+
+import ProtectedRoute from "./ProtectedRoutes";
+import RoleProtectedRoute from "./RoleProtectedRoute";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public */}
+        {/* =========================
+            Public Routes
+        ========================== */}
+
         <Route
           path="/login"
           element={<LoginPage />}
         />
 
-        {/* Protected */}
+        {/* =========================
+            Protected Routes
+        ========================== */}
+
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             {/* Root */}
@@ -37,34 +51,90 @@ function AppRoutes() {
               }
             />
 
-            {/* Dashboard */}
+            {/* =========================
+                Dashboard
+                All authenticated users
+            ========================== */}
+
             <Route
               path="/dashboard"
               element={<DashboardPage />}
             />
 
-            {/* Projects */}
+            {/* =========================
+                Employees
+                OWNER + PROJECT_MANAGER
+            ========================== */}
+
             <Route
-              path="/projects"
-              element={<ProjectsPage />}
-            />
+              element={
+                <RoleProtectedRoute
+                  roles={[
+                    "OWNER",
+                    "PROJECT_MANAGER",
+                  ]}
+                />
+              }
+            >
+              <Route
+                path="/users"
+                element={<UsersPage />}
+              />
+            </Route>
+
+            {/* =========================
+                Projects
+                OWNER + PROJECT_MANAGER + SITE_ENGINEER
+            ========================== */}
+
+            <Route
+              element={
+                <RoleProtectedRoute
+                  roles={[
+                    "OWNER",
+                    "PROJECT_MANAGER",
+                    "SITE_ENGINEER",
+                  ]}
+                />
+              }
+            >
+              <Route
+                path="/projects"
+                element={<ProjectsPage />}
+              />
+
+              <Route
+                path="/projects/:id"
+                element={<ProjectDetailsPage />}
+              />
+
+              {/* Inventory */}
+              <Route
+                path="/inventory"
+                element={<InventoryPage />}
+              />
+
+              {/* Attendance */}
+              <Route
+                path="/attendance"
+                element={<AttendancePage />}
+              />
+            </Route>
           </Route>
-
-          <Route
-            path="/attendance"
-            element={<AttendancePage />}
-          />
-
-          {/* Project Details */}
-          <Route
-            path="/projects/:id"
-            element={<ProjectDetailsPage />}
-          />
         </Route>
-        {/* users */}
+
+        {/* =========================
+            Unknown Routes
+        ========================== */}
+
         <Route
-          path="/users"
-          element={<UsersPage />}
+          path="*"
+          element={
+            <Navigate
+              to="/dashboard"
+              replace
+            />
+          }
         />
       </Routes>
     </BrowserRouter>

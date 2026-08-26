@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/store/authStore";
 import ProjectManagerDashboard from "../components/ProjectManagerDashboard";
 import OwnerDashboard from "../components/OwnerDashboard";
-
+import SiteEngineerDashboard from "../components/SiteEngineerDashboard";
 function DashboardPage() {
   const { user } = useAuthStore();
 
@@ -17,11 +17,7 @@ function DashboardPage() {
       return <ProjectManagerDashboard />;
 
     case "SITE_ENGINEER":
-      return (
-        <div className="p-6">
-          Site Engineer Dashboard coming next.
-        </div>
-      );
+      return <SiteEngineerDashboard />;
 
     default:
       return (

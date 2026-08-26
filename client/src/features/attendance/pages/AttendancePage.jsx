@@ -4,7 +4,7 @@ import { Search, CalendarDays } from "lucide-react";
 import CreateAttendanceDialog from "../components/CreateAttendanceDialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
+import { useAuthStore } from "@/store/authStore";
 import {
     useCompanyAttendance,
     useDeleteAttendance,
@@ -23,6 +23,19 @@ function AttendancePage() {
     const [date, setDate] = useState("");
 
     const deleteMutation = useDeleteAttendance();
+
+    const { user } = useAuthStore();
+
+    const canCreateAttendance =
+        user?.role === "OWNER" ||
+        user?.role === "PROJECT_MANAGER";
+
+    const canEditAttendance =
+        user?.role === "OWNER" ||
+        user?.role === "PROJECT_MANAGER";
+
+    const canDeleteAttendance =
+        user?.role === "OWNER";
 
     // Projects
     const {
@@ -436,24 +449,30 @@ function AttendancePage() {
                                     )}
 
                                     {/* Actions */}
-                                    <div className="mt-4 flex justify-end gap-2 border-t border-slate-100 pt-3">
-                                        <EditAttendanceDialog
-                                            attendance={record}
-                                        />
+                                    {(canEditAttendance || canDeleteAttendance) && (
+                                        <div className="mt-4 flex justify-end gap-2 border-t border-slate-100 pt-3">
+                                            {canEditAttendance && (
+                                                <EditAttendanceDialog
+                                                    attendance={record}
+                                                />
+                                            )}
 
-                                        <button
-                                            type="button"
-                                            disabled={deleteMutation.isPending}
-                                            onClick={() =>
-                                                handleDelete(record._id)
-                                            }
-                                            className="rounded-md px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-                                        >
-                                            {deleteMutation.isPending
-                                                ? "Deleting..."
-                                                : "Delete"}
-                                        </button>
-                                    </div>
+                                            {canDeleteAttendance && (
+                                                <button
+                                                    type="button"
+                                                    disabled={deleteMutation.isPending}
+                                                    onClick={() =>
+                                                        handleDelete(record._id)
+                                                    }
+                                                    className="rounded-md px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                    {deleteMutation.isPending
+                                                        ? "Deleting..."
+                                                        : "Delete"}
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         ))}

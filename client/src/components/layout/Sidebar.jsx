@@ -2,8 +2,11 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
 
+import { useAuthStore } from "@/store/authStore";
 import { navigation } from "@/constants/navigation";
+
 import { Button } from "@/components/ui/button";
+
 import {
   Sheet,
   SheetContent,
@@ -13,6 +16,31 @@ import {
 } from "@/components/ui/sheet";
 
 function SidebarContent({ onNavigate }) {
+  const { user } = useAuthStore();
+
+  const userRole = user?.role;
+
+  const visibleNavigation = navigation.filter((item) =>
+    item.roles?.includes(userRole)
+  );
+
+  const firstName = user?.firstName || "User";
+  const lastName = user?.lastName || "";
+
+  const initials = `${firstName?.[0] || ""}${
+    lastName?.[0] || ""
+  }`.toUpperCase();
+
+  const roleLabel = userRole
+    ? userRole
+        .split("_")
+        .map(
+          (word) =>
+            word.charAt(0) + word.slice(1).toLowerCase()
+        )
+        .join(" ")
+    : "User";
+
   return (
     <div className="flex h-full flex-col bg-white">
       {/* Logo */}
@@ -42,7 +70,7 @@ function SidebarContent({ onNavigate }) {
         </p>
 
         <nav className="space-y-1">
-          {navigation.map((item) => {
+          {visibleNavigation.map((item) => {
             const Icon = item.icon;
 
             return (
@@ -90,16 +118,16 @@ function SidebarContent({ onNavigate }) {
       <div className="border-t p-3">
         <div className="flex items-center gap-3 rounded-lg px-3 py-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
-            AB
+            {initials || "U"}
           </div>
 
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-slate-900">
-              Abhishek Bhatia
+              {firstName} {lastName}
             </p>
 
             <p className="truncate text-xs text-slate-500">
-              Owner
+              {roleLabel}
             </p>
           </div>
         </div>
@@ -147,7 +175,9 @@ function Sidebar() {
             className="w-[280px] border-slate-200 bg-white p-0"
           >
             <SheetHeader className="sr-only">
-              <SheetTitle>Navigation</SheetTitle>
+              <SheetTitle>
+                Navigation
+              </SheetTitle>
             </SheetHeader>
 
             <SidebarContent
