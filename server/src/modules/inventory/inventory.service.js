@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const Inventory = require("./inventory.model");
 const Project = require("../project/project.model");
 const ApiError = require("../../utils/ApiError");
@@ -5,7 +7,9 @@ const InventoryTransaction = require(
   "../inventoryTransaction/inventoryTransaction.model"
 );
 
+// ========================================
 // Create Inventory
+// ========================================
 exports.createInventory = async (
   inventoryData,
   companyId,
@@ -40,28 +44,61 @@ exports.createInventory = async (
     );
   }
 
-  // Generate Material Code
-  const count = await Inventory.countDocuments({
-    company: companyId,
-  });
+  // Generate next material code
+  const lastInventory =
+    await Inventory.findOne({
+      company: companyId,
+      materialCode: /^MAT-\d+$/,
+    })
+      .sort({ createdAt: -1 })
+      .select("materialCode")
+      .lean();
+
+  let nextNumber = 1;
+
+  if (lastInventory?.materialCode) {
+    const match =
+      lastInventory.materialCode.match(
+        /^MAT-(\d+)$/
+      );
+
+    if (match) {
+      nextNumber =
+        Number(match[1]) + 1;
+    }
+  }
 
   const materialCode = `MAT-${String(
-    count + 1
+    nextNumber
   ).padStart(4, "0")}`;
 
-  // Create Inventory
-  const inventory = await Inventory.create({
-    ...inventoryData,
-    materialCode,
-    currentStock: 0,
-    company: companyId,
-    createdBy: userId,
-  });
+  // Create inventory
+  const inventory =
+    await Inventory.create({
+      ...inventoryData,
+      materialCode,
+      currentStock: 0,
+      company: companyId,
+      createdBy: userId,
+    });
 
-  return inventory;
+  // Return populated inventory
+  return Inventory.findById(
+    inventory._id
+  )
+    .populate(
+      "project",
+      "projectName projectCode"
+    )
+    .populate(
+      "createdBy",
+      "firstName lastName"
+    );
 };
 
-// Get company inventory
+// ========================================
+// Get Company Inventory
+// ========================================
 exports.getInventory = async (
   companyId,
   filters = {}
@@ -88,163 +125,247 @@ exports.getInventory = async (
     query.isActive = isActive;
   }
 
-  const inventory = await Inventory.find(query)
-    .populate(
-      "project",
-      "projectName projectCode"
-    )
-    .populate(
-      "createdBy",
-      "firstName lastName"
-    )
-    .sort({
-      createdAt: -1,
-    });
+  const inventory =
+    await Inventory.find(query)
+      .populate(
+        "project",
+        "projectName projectCode"
+      )
+      .populate(
+        "createdBy",
+        "firstName lastName"
+      )
+      .sort({
+        createdAt: -1,
+      });
 
   return inventory;
 };
 
+// ========================================
 // Stock In
+// ========================================
 exports.stockIn = async (
   inventoryId,
   companyId,
   userId,
   data
 ) => {
-  const inventory = await Inventory.findOne({
-    _id: inventoryId,
-    company: companyId,
-    isActive: true,
-  });
+  const quantity = Number(
+    data.quantity
+  );
 
-  if (!inventory) {
-    throw new ApiError(
-      404,
-      "Material not found."
-    );
-  }
-
-  const quantity = Number(data.quantity);
-
-  if (!Number.isFinite(quantity) || quantity <= 0) {
+  if (
+    !Number.isFinite(quantity) ||
+    quantity <= 0
+  ) {
     throw new ApiError(
       400,
       "Stock quantity must be greater than 0."
     );
   }
 
-  const previousStock = inventory.currentStock;
-  const newStock = previousStock + quantity;
+  const session =
+    await mongoose.startSession();
 
-  inventory.currentStock = newStock;
+  try {
+    session.startTransaction();
 
-  await inventory.save();
+    const inventory =
+      await Inventory.findOne({
+        _id: inventoryId,
+        company: companyId,
+        isActive: true,
+      }).session(session);
 
-  await InventoryTransaction.create({
-    inventory: inventory._id,
-    project: inventory.project,
-    company: companyId,
-    transactionType: "STOCK_IN",
-    quantity,
-    previousStock,
-    newStock,
-    remarks: data.remarks || "",
-    performedBy: userId,
-  });
+    if (!inventory) {
+      throw new ApiError(
+        404,
+        "Material not found."
+      );
+    }
 
-  return inventory.populate(
-    "project",
-    "projectName projectCode"
-  );
+    const previousStock =
+      inventory.currentStock;
+
+    const newStock =
+      previousStock + quantity;
+
+    inventory.currentStock =
+      newStock;
+
+    await inventory.save({
+      session,
+    });
+
+    await InventoryTransaction.create(
+      [
+        {
+          inventory: inventory._id,
+          project: inventory.project,
+          company: companyId,
+          transactionType: "STOCK_IN",
+          quantity,
+          previousStock,
+          newStock,
+          remarks:
+            data.remarks || "",
+          performedBy: userId,
+        },
+      ],
+      {
+        session,
+      }
+    );
+
+    await session.commitTransaction();
+
+    return Inventory.findById(
+      inventory._id
+    ).populate(
+      "project",
+      "projectName projectCode"
+    );
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    await session.endSession();
+  }
 };
 
+// ========================================
 // Stock Out
+// ========================================
 exports.stockOut = async (
   inventoryId,
   companyId,
   userId,
   data
 ) => {
-  const inventory = await Inventory.findOne({
-    _id: inventoryId,
-    company: companyId,
-    isActive: true,
-  });
+  const quantity = Number(
+    data.quantity
+  );
 
-  if (!inventory) {
-    throw new ApiError(
-      404,
-      "Material not found."
-    );
-  }
-
-  const quantity = Number(data.quantity);
-
-  if (!Number.isFinite(quantity) || quantity <= 0) {
+  if (
+    !Number.isFinite(quantity) ||
+    quantity <= 0
+  ) {
     throw new ApiError(
       400,
       "Stock quantity must be greater than 0."
     );
   }
 
-  if (inventory.currentStock < quantity) {
-    throw new ApiError(
-      400,
-      "Insufficient stock available."
-    );
-  }
+  const session =
+    await mongoose.startSession();
 
-  const previousStock = inventory.currentStock;
-  const newStock = previousStock - quantity;
+  try {
+    session.startTransaction();
 
-  inventory.currentStock = newStock;
+    const inventory =
+      await Inventory.findOne({
+        _id: inventoryId,
+        company: companyId,
+        isActive: true,
+      }).session(session);
 
-  await inventory.save();
+    if (!inventory) {
+      throw new ApiError(
+        404,
+        "Material not found."
+      );
+    }
 
-  await InventoryTransaction.create({
-    inventory: inventory._id,
-    project: inventory.project,
-    company: companyId,
-    transactionType: "STOCK_OUT",
-    quantity,
-    previousStock,
-    newStock,
-    remarks: data.remarks || "",
-    performedBy: userId,
-  });
+    if (
+      inventory.currentStock <
+      quantity
+    ) {
+      throw new ApiError(
+        400,
+        "Insufficient stock available."
+      );
+    }
 
-  return inventory.populate(
-    "project",
-    "projectName projectCode"
-  );
-};
+    const previousStock =
+      inventory.currentStock;
 
-// Transaction History
-exports.getInventoryTransactions = async (
-  inventoryId,
-  companyId
-) => {
-  const inventory = await Inventory.findOne({
-    _id: inventoryId,
-    company: companyId,
-  });
+    const newStock =
+      previousStock - quantity;
 
-  if (!inventory) {
-    throw new ApiError(
-      404,
-      "Material not found."
-    );
-  }
+    inventory.currentStock =
+      newStock;
 
-  return InventoryTransaction.find({
-    inventory: inventoryId,
-    company: companyId,
-  })
-    .populate(
-      "performedBy",
-      "firstName lastName role"
-    )
-    .sort({
-      createdAt: -1,
+    await inventory.save({
+      session,
     });
+
+    await InventoryTransaction.create(
+      [
+        {
+          inventory: inventory._id,
+          project: inventory.project,
+          company: companyId,
+          transactionType: "STOCK_OUT",
+          quantity,
+          previousStock,
+          newStock,
+          remarks:
+            data.remarks || "",
+          performedBy: userId,
+        },
+      ],
+      {
+        session,
+      }
+    );
+
+    await session.commitTransaction();
+
+    return Inventory.findById(
+      inventory._id
+    ).populate(
+      "project",
+      "projectName projectCode"
+    );
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    await session.endSession();
+  }
 };
+
+// ========================================
+// Transaction History
+// ========================================
+exports.getInventoryTransactions =
+  async (
+    inventoryId,
+    companyId
+  ) => {
+    const inventory =
+      await Inventory.findOne({
+        _id: inventoryId,
+        company: companyId,
+      });
+
+    if (!inventory) {
+      throw new ApiError(
+        404,
+        "Material not found."
+      );
+    }
+
+    return InventoryTransaction.find({
+      inventory: inventoryId,
+      company: companyId,
+    })
+      .populate(
+        "performedBy",
+        "firstName lastName role"
+      )
+      .sort({
+        createdAt: -1,
+      });
+  };

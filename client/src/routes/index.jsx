@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import AppLayout from "@/components/layout/AppLayout";
-
+import SettingsPage from "@/features/settings/SettingPage";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import UsersPage from "@/features/users/pages/UsersPage";
@@ -17,7 +17,7 @@ import ProjectsPage from "@/features/projects/pages/ProjectPage";
 import ProjectDetailsPage from "@/features/projects/pages/ProjectDetailsPage";
 
 import AttendancePage from "@/features/attendance/pages/AttendancePage";
-
+import ReportsPage from "@/features/reports/pages/ReportPage";
 import ProtectedRoute from "./ProtectedRoutes";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 
@@ -118,6 +118,17 @@ function AppRoutes() {
               <Route
                 path="/attendance"
                 element={<AttendancePage />}
+              />
+
+              {/* Reports */}
+              <Route
+                path="/reports"
+                element={<ReportsPage />}
+              />
+
+              <Route
+                path="/settings"
+                element={<SettingsPage />}
               />
             </Route>
           </Route>
