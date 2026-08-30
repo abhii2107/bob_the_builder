@@ -149,19 +149,19 @@ function AttendancePage() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             {/* Header */}
             <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p className="text-sm font-medium text-blue-600">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B9073]">
                         Management
                     </p>
 
-                    <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                    <h1 className="mt-2 text-3xl font-semibold tracking-[-0.025em] text-[#191A1C] sm:text-[34px]">
                         Attendance
                     </h1>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-[#77736B]">
                         View and manage employee attendance across projects.
                     </p>
                 </div>
@@ -170,12 +170,12 @@ function AttendancePage() {
             </section>
 
             {/* Filters */}
-            <Card className="border-slate-200 bg-white shadow-none">
+            <Card className="rounded-xl border-[#D5DDD8] bg-[#E7ECE8] shadow-[0_8px_22px_rgba(25,26,28,0.035)] transition-colors hover:border-[#C3CEC7]">
                 <CardContent className="p-4">
                     <div className="grid gap-3 md:grid-cols-5">
                         {/* Search */}
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A49F95]" />
 
                             <Input
                                 type="search"
@@ -184,7 +184,7 @@ function AttendancePage() {
                                 onChange={(event) =>
                                     setSearch(event.target.value)
                                 }
-                                className="h-10 pl-9"
+                                className="h-10 rounded-lg border-[#D7DED9] bg-white/90 pl-9 text-sm text-[#191A1C] shadow-none placeholder:text-[#A49F95] focus:border-[#C9952E] focus:ring-2 focus:ring-[#F5EBD5]"
                             />
                         </div>
 
@@ -195,7 +195,7 @@ function AttendancePage() {
                                 setEmployeeId(event.target.value)
                             }
                             disabled={usersLoading}
-                            className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm outline-none focus:border-blue-500"
+                            className="h-10 rounded-lg border border-[#D7DED9] bg-white/90 px-3 text-sm text-[#55524D] outline-none transition focus:border-[#C9952E] focus:ring-2 focus:ring-[#F5EBD5]"
                         >
                             <option value="">
                                 {usersLoading
@@ -220,7 +220,7 @@ function AttendancePage() {
                                 setProjectId(event.target.value)
                             }
                             disabled={projectsLoading}
-                            className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm outline-none focus:border-blue-500"
+                            className="h-10 rounded-lg border border-[#D7DED9] bg-white/90 px-3 text-sm text-[#55524D] outline-none transition focus:border-[#C9952E] focus:ring-2 focus:ring-[#F5EBD5]"
                         >
                             <option value="">
                                 {projectsLoading
@@ -244,7 +244,7 @@ function AttendancePage() {
                             onChange={(event) =>
                                 setStatusFilter(event.target.value)
                             }
-                            className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm outline-none focus:border-blue-500"
+                            className="h-10 rounded-lg border border-[#D7DED9] bg-white/90 px-3 text-sm text-[#55524D] outline-none transition focus:border-[#C9952E] focus:ring-2 focus:ring-[#F5EBD5]"
                         >
                             <option value="ALL">
                                 All statuses
@@ -274,7 +274,7 @@ function AttendancePage() {
                             onChange={(event) =>
                                 setDate(event.target.value)
                             }
-                            className="h-10"
+                            className="h-10 rounded-lg border-[#D7DED9] bg-white/90 text-[#55524D] focus:border-[#C9952E] focus:ring-2 focus:ring-[#F5EBD5]"
                         />
                     </div>
                 </CardContent>
@@ -314,7 +314,7 @@ function AttendancePage() {
                     {[1, 2, 3, 4].map((item) => (
                         <div
                             key={item}
-                            className="h-24 animate-pulse rounded-xl border border-slate-200 bg-white"
+                            className="h-28 animate-pulse rounded-xl border border-[#D5DDD8] bg-[#E7ECE8]"
                         />
                     ))}
                 </div>
@@ -322,13 +322,13 @@ function AttendancePage() {
 
             {/* Error */}
             {isError && (
-                <Card className="border-red-200 bg-red-50 shadow-none">
+                <Card className="rounded-xl border-[#EAD3D0] bg-[#FDF8F7] shadow-[0_10px_30px_rgba(25,26,28,0.04)]">
                     <CardContent className="p-6">
-                        <h2 className="font-semibold text-red-900">
+                        <h2 className="font-semibold text-[#7F403B]">
                             Unable to load attendance
                         </h2>
 
-                        <p className="mt-1 text-sm text-red-700">
+                        <p className="mt-1 text-sm text-[#A9605B]">
                             {error?.response?.data?.message ||
                                 "Something went wrong."}
                         </p>
@@ -340,17 +340,17 @@ function AttendancePage() {
             {!attendanceLoading &&
                 !isError &&
                 filteredAttendance.length === 0 && (
-                    <Card className="border-slate-200 bg-white shadow-none">
+                    <Card className="rounded-xl border-[#D5DDD8] bg-[#E7ECE8] shadow-[0_8px_22px_rgba(25,26,28,0.035)] transition-colors hover:border-[#C3CEC7]">
                         <CardContent className="flex flex-col items-center justify-center px-6 py-16 text-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
-                                <CalendarDays className="h-6 w-6 text-blue-600" />
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#D7D9BF] bg-[#E7E9D7] text-[#7E845E] shadow-[0_5px_14px_rgba(25,26,28,0.035)]">
+                                <CalendarDays className="h-6 w-6 text-[#7E845E]" />
                             </div>
 
-                            <h2 className="mt-4 text-sm font-semibold text-slate-900">
+                            <h2 className="mt-4 text-sm font-semibold text-[#191A1C]">
                                 No attendance records
                             </h2>
 
-                            <p className="mt-1 text-sm text-slate-500">
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#77736B]">
                                 {search ||
                                     employeeId ||
                                     projectId ||
@@ -371,24 +371,24 @@ function AttendancePage() {
                         {filteredAttendance.map((record) => (
                             <Card
                                 key={record._id}
-                                className="border-slate-200 bg-white shadow-none transition-shadow hover:shadow-sm"
+                                className="group rounded-xl border-[#D5DDD8] bg-[#E7ECE8] shadow-[0_10px_28px_rgba(25,26,28,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C3CEC7] hover:shadow-[0_16px_34px_rgba(25,26,28,0.065)]"
                             >
                                 <CardContent className="p-5">
                                     {/* Employee + Status */}
                                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-semibold text-blue-600">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#D7D9BF] bg-[#E7E9D7] text-xs font-semibold text-[#7E845E] shadow-[0_5px_14px_rgba(25,26,28,0.035)]">
                                                 {record.employee?.firstName?.[0]}
                                                 {record.employee?.lastName?.[0]}
                                             </div>
 
                                             <div>
-                                                <p className="text-sm font-semibold text-slate-900">
+                                                <p className="text-sm font-semibold text-[#191A1C]">
                                                     {record.employee?.firstName}{" "}
                                                     {record.employee?.lastName}
                                                 </p>
 
-                                                <p className="mt-0.5 text-xs text-slate-400">
+                                                <p className="mt-0.5 text-xs text-[#A49F95]">
                                                     {record.employee?.email ||
                                                         record.employee?.role ||
                                                         "Employee"}
@@ -402,7 +402,7 @@ function AttendancePage() {
                                     </div>
 
                                     {/* Details */}
-                                    <div className="mt-4 grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 sm:grid-cols-4">
+                                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-[#D8E0DB] pt-4 sm:grid-cols-4">
                                         <InfoItem
                                             label="Project"
                                             value={
@@ -428,12 +428,12 @@ function AttendancePage() {
 
                                     {/* Remarks */}
                                     {record.remarks && (
-                                        <div className="mt-4 rounded-md bg-slate-50 px-3 py-2">
-                                            <p className="text-xs text-slate-400">
+                                        <div className="mt-4 rounded-xl border border-[#D9E1DC] bg-white/60 px-3 py-3">
+                                            <p className="text-xs text-[#A49F95]">
                                                 Remarks
                                             </p>
 
-                                            <p className="mt-1 text-xs text-slate-600">
+                                            <p className="mt-1 text-xs text-[#625E57]">
                                                 {record.remarks}
                                             </p>
                                         </div>
@@ -441,7 +441,7 @@ function AttendancePage() {
 
                                     {/* Marked By */}
                                     {record.markedBy && (
-                                        <p className="mt-3 text-[11px] text-slate-400">
+                                        <p className="mt-3 text-[11px] text-[#A49F95]">
                                             Marked by{" "}
                                             {record.markedBy.firstName}{" "}
                                             {record.markedBy.lastName}
@@ -450,7 +450,7 @@ function AttendancePage() {
 
                                     {/* Actions */}
                                     {(canEditAttendance || canDeleteAttendance) && (
-                                        <div className="mt-4 flex justify-end gap-2 border-t border-slate-100 pt-3">
+                                        <div className="mt-5 flex flex-wrap justify-end gap-2 border-t border-[#D8E0DB] pt-4">
                                             {canEditAttendance && (
                                                 <EditAttendanceDialog
                                                     attendance={record}
@@ -464,7 +464,7 @@ function AttendancePage() {
                                                     onClick={() =>
                                                         handleDelete(record._id)
                                                     }
-                                                    className="rounded-md px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                                    className="rounded-md px-3 py-2 text-xs font-medium text-[#A9605B] transition-colors hover:bg-[#F4E8E6] disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
                                                     {deleteMutation.isPending
                                                         ? "Deleting..."
@@ -484,13 +484,13 @@ function AttendancePage() {
 
 function SummaryCard({ label, value }) {
     return (
-        <Card className="border-slate-200 bg-white shadow-none">
+        <Card className="rounded-xl border-[#D5DDD8] bg-[#E7ECE8] shadow-[0_8px_22px_rgba(25,26,28,0.035)] transition-colors hover:border-[#C3CEC7]">
             <CardContent className="p-4">
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-[#A49F95]">
                     {label}
                 </p>
 
-                <p className="mt-1 text-xl font-semibold text-slate-900">
+                <p className="mt-1 text-xl font-semibold text-[#191A1C]">
                     {value}
                 </p>
             </CardContent>
@@ -500,10 +500,10 @@ function SummaryCard({ label, value }) {
 
 function AttendanceStatusBadge({ status }) {
     const styles = {
-        PRESENT: "bg-emerald-50 text-emerald-700",
-        ABSENT: "bg-red-50 text-red-700",
-        HALF_DAY: "bg-amber-50 text-amber-700",
-        LEAVE: "bg-blue-50 text-blue-700",
+        PRESENT: "border border-[#D5E1D8] bg-[#EAF0EB] text-[#55705F]",
+        ABSENT: "border border-[#EAD3D0] bg-[#F4E8E6] text-[#A9605B]",
+        HALF_DAY: "border border-[#E5D5AE] bg-[#F5EBD5] text-[#916B1E]",
+        LEAVE: "border border-[#D7D9BF] bg-[#E7E9D7] text-[#6F754E]",
     };
 
     const labels = {
@@ -516,7 +516,7 @@ function AttendanceStatusBadge({ status }) {
     return (
         <span
             className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${styles[status] ||
-                "bg-slate-100 text-slate-600"
+                "border border-[#D9E1DC] bg-white text-[#625E57]"
                 }`}
         >
             {labels[status] || status}
@@ -527,11 +527,11 @@ function AttendanceStatusBadge({ status }) {
 function InfoItem({ label, value }) {
     return (
         <div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#A49F95]">
                 {label}
             </p>
 
-            <p className="mt-1 truncate text-xs font-medium text-slate-700">
+            <p className="mt-1 truncate text-xs font-medium text-[#55524D]">
                 {value}
             </p>
         </div>

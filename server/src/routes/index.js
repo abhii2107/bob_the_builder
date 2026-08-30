@@ -13,7 +13,8 @@ const inventoryTransactionRoutes =
   require("../modules/inventoryTransaction/inventoryTransaction.routes");
 const dashboardRoutes =
   require("../modules/dashboard/dashboard.routes");
-
+const taskRoutes =
+  require("../modules/task/task.routes");
 const attendanceRoutes =
   require("../modules/attendance/attendance.routes");
 
@@ -38,6 +39,7 @@ router.use("/attendance", attendanceRoutes);
 
 router.use("/reports", reportRoutes);
 
+router.use("/tasks", taskRoutes);
 router.use("/ai", aiRoutes);
 
 module.exports = router;

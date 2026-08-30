@@ -4,168 +4,341 @@ import {
   ClipboardCheck,
   Boxes,
   AlertTriangle,
+  ArrowRight,
 } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/card";
 
 function ProjectManagerDashboard() {
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <section>
-        <p className="text-sm font-medium text-blue-600">
-          Operations
-        </p>
+    <div className="space-y-8">
+      {/* =========================================
+          Header
+      ========================================== */}
+      <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B9073]">
+            Operations
+          </p>
 
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-          Project Manager Dashboard
-        </h1>
+          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.025em] text-[#191A1C] sm:text-[34px]">
+            Project Manager Dashboard
+          </h1>
 
-        <p className="mt-1 text-sm text-slate-500">
-          Monitor your projects, teams, attendance, and site operations.
-        </p>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#77736B]">
+            Monitor your projects, teams, attendance, and site operations
+            from one place.
+          </p>
+        </div>
+
+        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#D5DDD8] bg-white px-3 py-2 shadow-[0_6px_18px_rgba(25,26,28,0.035)]">
+          <span className="h-2 w-2 rounded-full bg-[#5D7D68]" />
+
+          <span className="text-xs font-medium text-[#55524D]">
+            Workspace active
+          </span>
+        </div>
       </section>
 
-      {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <DashboardCard
-          title="My Projects"
-          value="—"
-          icon={FolderKanban}
-        />
+      {/* =========================================
+          Primary Metrics
+      ========================================== */}
+      <section>
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <DashboardCard
+            title="My Projects"
+            value="—"
+            icon={FolderKanban}
+            accent
+          />
 
-        <DashboardCard
-          title="Team Members"
-          value="—"
-          icon={Users}
-        />
+          <DashboardCard
+            title="Team Members"
+            value="—"
+            icon={Users}
+          />
 
-        <DashboardCard
-          title="Present Today"
-          value="—"
-          icon={ClipboardCheck}
-        />
+          <DashboardCard
+            title="Present Today"
+            value="—"
+            icon={ClipboardCheck}
+          />
 
-        <DashboardCard
-          title="Low Stock"
-          value="—"
-          icon={AlertTriangle}
-        />
-      </div>
+          <DashboardCard
+            title="Low Stock"
+            value="—"
+            icon={AlertTriangle}
+            warning
+          />
+        </div>
+      </section>
 
-      {/* Project + Operations */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="border-slate-200 bg-white shadow-none">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-                <FolderKanban className="h-5 w-5 text-blue-600" />
-              </div>
+      {/* =========================================
+          Project + Site Operations
+      ========================================== */}
+      <section>
+        <div className="mb-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A49F95]">
+            Site Operations
+          </p>
 
-              <div>
-                <h2 className="text-sm font-semibold text-slate-900">
-                  Project Progress
-                </h2>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  Your assigned project performance will appear here.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 bg-white shadow-none">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-                <Boxes className="h-5 w-5 text-blue-600" />
-              </div>
-
-              <div>
-                <h2 className="text-sm font-semibold text-slate-900">
-                  Site Inventory
-                </h2>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  Inventory status for your projects will appear here.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Attendance */}
-      <Card className="border-slate-200 bg-white shadow-none">
-        <CardContent className="p-6">
-          <h2 className="text-sm font-semibold text-slate-900">
-            Today's Team Attendance
+          <h2 className="mt-1 text-lg font-semibold tracking-[-0.01em] text-[#191A1C]">
+            Project & Site Overview
           </h2>
+        </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <MiniStat
-              label="Present"
-              value="—"
-            />
+        <div className="grid gap-5 lg:grid-cols-2">
+          {/* Project Progress */}
+          <OperationCard
+            eyebrow="Projects"
+            title="Project Progress"
+            description="Your assigned project performance will appear here."
+            icon={FolderKanban}
+            action="View projects"
+          />
 
-            <MiniStat
-              label="Absent"
-              value="—"
-            />
+          {/* Site Inventory */}
+          <OperationCard
+            eyebrow="Materials"
+            title="Site Inventory"
+            description="Inventory status for your projects will appear here."
+            icon={Boxes}
+            action="View inventory"
+            accent
+          />
+        </div>
+      </section>
 
-            <MiniStat
-              label="Half Day"
-              value="—"
-            />
+      {/* =========================================
+          Attendance
+      ========================================== */}
+      <section>
+        <Card className="rounded-xl border-[#D5DDD8] bg-[#E7ECE8] shadow-[0_12px_30px_rgba(25,26,28,0.045)]">
+          <CardContent className="p-6">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A49F95]">
+                  Workforce
+                </p>
 
-            <MiniStat
-              label="Leave"
-              value="—"
-            />
-          </div>
-        </CardContent>
-      </Card>
+                <h2 className="mt-1 text-base font-semibold text-[#191A1C]">
+                  Today's Team Attendance
+                </h2>
+
+                <p className="mt-1 text-sm text-[#77736B]">
+                  Monitor today's team availability across assigned sites.
+                </p>
+              </div>
+
+              <div className="hidden h-10 w-10 items-center justify-center rounded-xl border border-[#D9E1DC] bg-white text-[#5F5B54] shadow-[0_5px_14px_rgba(25,26,28,0.035)] sm:flex">
+                <ClipboardCheck className="h-5 w-5" />
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <MiniStat
+                label="Present"
+                value="—"
+                tone="positive"
+              />
+
+              <MiniStat
+                label="Absent"
+                value="—"
+              />
+
+              <MiniStat
+                label="Half Day"
+                value="—"
+              />
+
+              <MiniStat
+                label="Leave"
+                value="—"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </section>
     </div>
   );
 }
+
+/* =========================================================
+   Primary Dashboard Card
+   ========================================================= */
 
 function DashboardCard({
   title,
   value,
   icon: Icon,
+  accent = false,
+  warning = false,
 }) {
+  const iconClass = warning
+    ? "border-[#E5D5AE] bg-[#F5EBD5] text-[#C9952E]"
+    : accent
+      ? "border-[#D7D9BF] bg-[#E7E9D7] text-[#7E845E]"
+      : "border-[#D9E1DC] bg-white text-[#5F5B54]";
+
   return (
-    <Card className="border-slate-200 bg-white shadow-none">
+    <Card className="group relative overflow-hidden rounded-xl border-[#D5DDD8] bg-[#E7ECE8] shadow-[0_10px_28px_rgba(25,26,28,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C3CEC7] hover:shadow-[0_16px_34px_rgba(25,26,28,0.065)]">
+      <div
+        className={
+          warning
+            ? "absolute inset-x-0 top-0 h-px bg-[#C9952E]"
+            : accent
+              ? "absolute inset-x-0 top-0 h-px bg-[#8B9073]"
+              : "absolute inset-x-0 top-0 h-px bg-[#D8E1DB]"
+        }
+      />
+
       <CardContent className="p-5">
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-medium text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#77736B]">
               {title}
             </p>
 
-            <p className="mt-2 text-2xl font-semibold text-slate-900">
+            <p className="mt-3 text-3xl font-semibold tracking-[-0.025em] text-[#191A1C]">
               {value}
             </p>
           </div>
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-            <Icon className="h-5 w-5 text-blue-600" />
+          <div
+            className={`flex h-11 w-11 items-center justify-center rounded-xl border shadow-[0_5px_14px_rgba(25,26,28,0.035)] ${iconClass}`}
+          >
+            <Icon className="h-[18px] w-[18px]" />
           </div>
+        </div>
+
+        <div className="mt-6 border-t border-[#D8E0DB] pt-3">
+          <span className="text-[11px] text-[#A49F95]">
+            Current snapshot
+          </span>
         </div>
       </CardContent>
     </Card>
   );
 }
 
-function MiniStat({ label, value }) {
-  return (
-    <div className="rounded-lg bg-slate-50 p-4">
-      <p className="text-xs text-slate-400">
-        {label}
-      </p>
+/* =========================================================
+   Operations Card
+   ========================================================= */
 
-      <p className="mt-1 text-lg font-semibold text-slate-900">
+function OperationCard({
+  eyebrow,
+  title,
+  description,
+  icon: Icon,
+  action,
+  accent = false,
+}) {
+  return (
+    <Card className="group rounded-xl border-[#D5DDD8] bg-[#E7ECE8] shadow-[0_12px_30px_rgba(25,26,28,0.045)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C3CEC7] hover:shadow-[0_16px_36px_rgba(25,26,28,0.07)]">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex min-w-0 items-start gap-3">
+            <div
+              className={
+                accent
+                  ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#E7D6B0] bg-[#F5EBD5] text-[#C9952E] shadow-[0_5px_14px_rgba(25,26,28,0.035)]"
+                  : "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#D9E1DC] bg-white text-[#5F5B54] shadow-[0_5px_14px_rgba(25,26,28,0.035)]"
+              }
+            >
+              <Icon className="h-5 w-5" />
+            </div>
+
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A49F95]">
+                {eyebrow}
+              </p>
+
+              <h3 className="mt-1 text-base font-semibold text-[#191A1C]">
+                {title}
+              </h3>
+
+              <p className="mt-1 max-w-md text-sm leading-5 text-[#77736B]">
+                {description}
+              </p>
+            </div>
+          </div>
+
+          <span className="hidden rounded-full border border-[#D9E1DC] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#625E57] sm:inline-flex">
+            Monitoring
+          </span>
+        </div>
+
+        {/* Preview surface */}
+        <div className="mt-6 rounded-xl border border-[#D9E1DC] bg-white/70 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.1em] text-[#A49F95]">
+                Status
+              </p>
+
+              <p className="mt-1 text-sm font-medium text-[#55524D]">
+                No operational data available
+              </p>
+            </div>
+
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F4F3EE] text-[#8B877E]">
+              <Icon className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-[#E5E9E6]">
+            <div
+              className={
+                accent
+                  ? "h-full w-1/3 rounded-full bg-[#C9952E]"
+                  : "h-full w-1/3 rounded-full bg-[#8B9073]"
+              }
+            />
+          </div>
+        </div>
+
+        <div className="mt-5 flex items-center justify-between border-t border-[#D8E0DB] pt-4">
+          <span className="text-xs text-[#77736B]">
+            Operational workspace
+          </span>
+
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#252629]">
+            {action}
+
+            <ArrowRight className="h-3.5 w-3.5 text-[#C9952E] transition-transform duration-200 group-hover:translate-x-0.5" />
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+/* =========================================================
+   Attendance Mini Stat
+   ========================================================= */
+
+function MiniStat({
+  label,
+  value,
+  tone,
+}) {
+  return (
+    <div className="rounded-xl border border-[#D9E1DC] bg-white/70 p-4">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-medium text-[#77736B]">
+          {label}
+        </p>
+
+        {tone === "positive" && (
+          <span className="h-2 w-2 rounded-full bg-[#5D7D68]" />
+        )}
+      </div>
+
+      <p className="mt-3 text-2xl font-semibold tracking-[-0.02em] text-[#191A1C]">
         {value}
       </p>
     </div>
