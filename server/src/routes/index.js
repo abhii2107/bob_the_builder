@@ -17,6 +17,8 @@ const dashboardRoutes =
 const attendanceRoutes =
   require("../modules/attendance/attendance.routes");
 
+  const aiRoutes =
+  require("../modules/ai/ai.routes");
 
 router.use("/auth", authRoutes);
 router.use("/company", companyRoutes);
@@ -35,5 +37,7 @@ router.use("/dashboard", dashboardRoutes);
 router.use("/attendance", attendanceRoutes);
 
 router.use("/reports", reportRoutes);
+
+router.use("/ai", aiRoutes);
 
 module.exports = router;

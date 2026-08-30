@@ -1,11 +1,12 @@
 import {
-  LayoutDashboard,
-  Users,
-  FolderKanban,
-  ClipboardCheck,
+  BarChart3,
   Boxes,
-  FileText,
+  ClipboardList,
+  FolderKanban,
+  LayoutDashboard,
   Settings,
+  Sparkles,
+  Users,
 } from "lucide-react";
 
 export const navigation = [
@@ -13,72 +14,50 @@ export const navigation = [
     title: "Dashboard",
     path: "/dashboard",
     icon: LayoutDashboard,
-    roles: [
-      "OWNER",
-      "PROJECT_MANAGER",
-      "SITE_ENGINEER",
-    ],
+    roles: ["OWNER", "PROJECT_MANAGER", "SITE_ENGINEER", "STORE_MANAGER"],
   },
-
   {
-    title: "Employees",
+    title: "Users",
     path: "/users",
     icon: Users,
-    roles: [
-      "OWNER",
-      "PROJECT_MANAGER",
-    ],
+    roles: ["OWNER", "PROJECT_MANAGER"],
   },
-
   {
     title: "Projects",
     path: "/projects",
     icon: FolderKanban,
-    roles: [
-      "OWNER",
-      "PROJECT_MANAGER",
-      "SITE_ENGINEER",
-    ],
+    roles: ["OWNER", "PROJECT_MANAGER", "SITE_ENGINEER"],
   },
-
   {
     title: "Attendance",
     path: "/attendance",
-    icon: ClipboardCheck,
-    roles: [
-      "OWNER",
-      "PROJECT_MANAGER",
-      "SITE_ENGINEER",
-    ],
+    icon: ClipboardList,
+    roles: ["OWNER", "PROJECT_MANAGER", "SITE_ENGINEER"],
   },
-
   {
     title: "Inventory",
     path: "/inventory",
     icon: Boxes,
-    roles: [
-      "OWNER",
-      "PROJECT_MANAGER",
-      "SITE_ENGINEER",
-    ],
+    roles: ["OWNER", "PROJECT_MANAGER", "SITE_ENGINEER", "STORE_MANAGER"],
   },
-
   {
     title: "Reports",
     path: "/reports",
-    icon: FileText,
-    roles: [
-      "OWNER",
-      "PROJECT_MANAGER",
-    ],
+    icon: BarChart3,
+    roles: ["OWNER", "PROJECT_MANAGER"],
   },
-
   {
     title: "Settings",
     path: "/settings",
     icon: Settings,
-    roles: [
-      "OWNER",
-    ],
+    roles: ["OWNER"],
+  },
+  {
+    title: "BuildOps AI",
+    path: "/ai",
+    icon: Sparkles,
+    roles: ["OWNER", "PROJECT_MANAGER", "SITE_ENGINEER", "STORE_MANAGER"],
   },
 ];
+
+export default navigation;

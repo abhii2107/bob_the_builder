@@ -6,18 +6,18 @@ import {
 } from "react-router-dom";
 
 import AppLayout from "@/components/layout/AppLayout";
-import SettingsPage from "@/features/settings/SettingPage";
+
 import LoginPage from "@/features/auth/pages/LoginPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import UsersPage from "@/features/users/pages/UsersPage";
-
-import InventoryPage from "@/features/inventory/pages/InventoryPage";
-
 import ProjectsPage from "@/features/projects/pages/ProjectPage";
 import ProjectDetailsPage from "@/features/projects/pages/ProjectDetailsPage";
-
 import AttendancePage from "@/features/attendance/pages/AttendancePage";
+import InventoryPage from "@/features/inventory/pages/InventoryPage";
 import ReportsPage from "@/features/reports/pages/ReportPage";
+import SettingsPage from "@/features/settings/SettingPage";
+import AIChatPage from "@/features/ai/pages/AIChatPage";
+
 import ProtectedRoute from "./ProtectedRoutes";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 
@@ -25,21 +25,16 @@ function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* =========================
-            Public Routes
-        ========================== */}
-
+        {/* Public */}
         <Route
           path="/login"
           element={<LoginPage />}
         />
 
-        {/* =========================
-            Protected Routes
-        ========================== */}
-
+        {/* Protected */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
+
             {/* Root */}
             <Route
               path="/"
@@ -51,21 +46,13 @@ function AppRoutes() {
               }
             />
 
-            {/* =========================
-                Dashboard
-                All authenticated users
-            ========================== */}
-
+            {/* Dashboard */}
             <Route
               path="/dashboard"
               element={<DashboardPage />}
             />
 
-            {/* =========================
-                Employees
-                OWNER + PROJECT_MANAGER
-            ========================== */}
-
+            {/* Employees */}
             <Route
               element={
                 <RoleProtectedRoute
@@ -82,11 +69,7 @@ function AppRoutes() {
               />
             </Route>
 
-            {/* =========================
-                Projects
-                OWNER + PROJECT_MANAGER + SITE_ENGINEER
-            ========================== */}
-
+            {/* Projects */}
             <Route
               element={
                 <RoleProtectedRoute
@@ -108,36 +91,71 @@ function AppRoutes() {
                 element={<ProjectDetailsPage />}
               />
 
-              {/* Inventory */}
-              <Route
-                path="/inventory"
-                element={<InventoryPage />}
-              />
-
-              {/* Attendance */}
               <Route
                 path="/attendance"
                 element={<AttendancePage />}
               />
 
-              {/* Reports */}
+              <Route
+                path="/inventory"
+                element={<InventoryPage />}
+              />
+            </Route>
+
+            {/* Reports */}
+            <Route
+              element={
+                <RoleProtectedRoute
+                  roles={[
+                    "OWNER",
+                    "PROJECT_MANAGER",
+                  ]}
+                />
+              }
+            >
               <Route
                 path="/reports"
                 element={<ReportsPage />}
               />
+            </Route>
 
+            {/* Settings */}
+            <Route
+              element={
+                <RoleProtectedRoute
+                  roles={["OWNER"]}
+                />
+              }
+            >
               <Route
                 path="/settings"
                 element={<SettingsPage />}
               />
             </Route>
+
+            {/* BuildOps AI */}
+            <Route
+              element={
+                <RoleProtectedRoute
+                  roles={[
+                    "OWNER",
+                    "PROJECT_MANAGER",
+                    "SITE_ENGINEER",
+                    "STORE_MANAGER",
+                  ]}
+                />
+              }
+            >
+              <Route
+                path="/ai"
+                element={<AIChatPage />}
+              />
+            </Route>
+
           </Route>
         </Route>
 
-        {/* =========================
-            Unknown Routes
-        ========================== */}
-
+        {/* Unknown route */}
         <Route
           path="*"
           element={

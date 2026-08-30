@@ -5,10 +5,17 @@ const connectDB = require("./config/db");
 
 const PORT = process.env.PORT || 5000;
 
-// Connect Database
-connectDB();
+const startServer = async () => {
+  try {
+    await connectDB();
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Server startup failed:", error.message);
+    process.exitCode = 1;
+  }
+};
+
+startServer();
