@@ -4,6 +4,7 @@ import {
   Search,
   UserRound,
   Sparkles,
+  Settings,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +12,6 @@ import {
   Avatar,
   AvatarFallback,
 } from "@/components/ui/avatar";
-
 import { Button } from "@/components/ui/button";
 
 import {
@@ -30,7 +30,6 @@ import {
 
 function Topbar() {
   const navigate = useNavigate();
-
   const { user } = useAuthStore();
 
   const handleLogout = () => {
@@ -63,30 +62,48 @@ function Topbar() {
     : "User";
 
   return (
-    <header className="sticky top-0 z-40 flex h-[68px] shrink-0 items-center border-b border-[#e7e5df] bg-white/95 px-4 backdrop-blur-sm sm:px-6">
+    <header className="sticky top-0 z-40 flex h-[68px] shrink-0 items-center border-b border-[#DCE2DE] bg-[#F7F6F2]/92 px-4 backdrop-blur-xl sm:px-6">
+      {/* Soft top highlight */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D8DED9] to-transparent" />
+
       {/* Left */}
       <div className="flex min-w-0 flex-1 items-center">
         {/* Mobile brand */}
         <div className="ml-12 flex items-center gap-2.5 lg:hidden">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#1c1d1f] text-xs font-bold text-white">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1C1D1F] text-xs font-bold text-white shadow-[0_5px_12px_rgba(25,26,28,0.10)]">
             B
           </div>
 
-          <span className="hidden text-sm font-semibold tracking-tight text-[#191a1c] sm:block">
-            BuildOps
-          </span>
+          <div className="hidden leading-tight sm:block">
+            <span className="block text-sm font-semibold tracking-tight text-[#191A1C]">
+              BuildOps
+            </span>
+
+            <span className="mt-0.5 block text-[9px] font-semibold uppercase tracking-[0.14em] text-[#A49F95]">
+              Construction ERP
+            </span>
+          </div>
         </div>
 
         {/* Search */}
-        <div className="relative ml-4 hidden w-full max-w-[420px] md:block lg:ml-0">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#aaa79f]" />
+        <div className="relative ml-4 hidden w-full max-w-[440px] md:block lg:ml-0">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8E8A81]" />
 
           <input
             type="search"
             placeholder="Search projects, employees..."
             aria-label="Search"
-            className="h-10 w-full rounded-md border border-[#e2e0d9] bg-[#f7f6f2] pl-10 pr-4 text-sm text-[#191a1c] outline-none placeholder:text-[#aaa79f] transition-all duration-150 focus:border-[#c9952e] focus:bg-white focus:ring-2 focus:ring-[#f6ecd6]"
+            className="h-10 w-full rounded-lg border border-[#D8DED9] bg-white/75 pl-10 pr-4 text-sm text-[#191A1C] outline-none shadow-[0_4px_14px_rgba(25,26,28,0.025)] placeholder:text-[#AAA69D] transition-all duration-150 focus:border-[#C9952E] focus:bg-white focus:ring-2 focus:ring-[#F5EBD5]"
           />
+        </div>
+
+        {/* Mobile page utility */}
+        <div className="ml-3 hidden items-center gap-2 sm:flex md:hidden">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#5D7D68]" />
+
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A49F95]">
+            Workspace
+          </span>
         </div>
       </div>
 
@@ -96,7 +113,7 @@ function Topbar() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-9 w-9 rounded-md text-[#77766f] hover:bg-[#f5f4f0] hover:text-[#191a1c] md:hidden"
+          className="h-9 w-9 rounded-lg text-[#77736B] hover:bg-white/80 hover:text-[#191A1C] md:hidden"
           aria-label="Search"
         >
           <Search className="h-[18px] w-[18px]" />
@@ -107,78 +124,89 @@ function Topbar() {
           variant="ghost"
           size="icon"
           onClick={() => navigate("/ai")}
-          className="h-9 w-9 rounded-md text-[#77766f] hover:bg-[#f6ecd6] hover:text-[#191a1c]"
+          className="group h-9 w-9 rounded-lg text-[#77736B] hover:bg-[#F5EBD5] hover:text-[#191A1C]"
           aria-label="BuildOps AI"
         >
-          <Sparkles className="h-[17px] w-[17px]" />
+          <Sparkles className="h-[17px] w-[17px] transition-transform duration-150 group-hover:scale-105" />
         </Button>
 
         {/* Notifications */}
         <Button
           variant="ghost"
           size="icon"
-          className="relative h-9 w-9 rounded-md text-[#77766f] hover:bg-[#f5f4f0] hover:text-[#191a1c]"
+          className="group relative h-9 w-9 rounded-lg text-[#77736B] hover:bg-white/80 hover:text-[#191A1C]"
           aria-label="Notifications"
         >
           <Bell className="h-[18px] w-[18px]" />
 
-          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#c9952e] ring-2 ring-white" />
+          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#C9952E] ring-2 ring-[#F7F6F2]" />
         </Button>
 
-        <div className="mx-1 hidden h-6 w-px bg-[#e7e5df] sm:block" />
+        <div className="mx-1 hidden h-7 w-px bg-[#DCE2DE] sm:block" />
 
         {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-2 rounded-md p-1.5 outline-none transition-colors hover:bg-[#f5f4f0] focus:ring-2 focus:ring-[#f6ecd6]"
+              className="group flex items-center gap-2 rounded-lg p-1.5 outline-none transition-all duration-150 hover:bg-white/75 focus:ring-2 focus:ring-[#F5EBD5]"
               aria-label="Open user menu"
             >
-              <Avatar className="h-8 w-8 border border-[#dedcd4]">
-                <AvatarFallback className="bg-[#1c1d1f] text-xs font-semibold text-white">
+              <Avatar className="h-8 w-8 border border-[#D5DDD8] shadow-[0_3px_10px_rgba(25,26,28,0.045)]">
+                <AvatarFallback className="bg-[#1C1D1F] text-xs font-semibold text-white">
                   {initials}
                 </AvatarFallback>
               </Avatar>
 
               <div className="hidden text-left leading-tight lg:block">
-                <p className="max-w-[140px] truncate text-sm font-medium text-[#191a1c]">
+                <p className="max-w-[145px] truncate text-sm font-semibold text-[#191A1C]">
                   {firstName} {lastName}
                 </p>
 
-                <p className="mt-0.5 text-[11px] font-medium text-[#77766f]">
+                <p className="mt-0.5 truncate text-[10px] font-medium uppercase tracking-[0.08em] text-[#8E8A81]">
                   {roleLabel}
                 </p>
               </div>
+
+              <span className="hidden h-1.5 w-1.5 rounded-full bg-[#5D7D68] lg:block" />
             </button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
             align="end"
             sideOffset={8}
-            className="w-60 border-[#e7e5df] bg-white p-1.5 shadow-lg"
+            className="w-60 rounded-xl border-[#DCE2DE] bg-white p-1.5 shadow-[0_18px_40px_rgba(25,26,28,0.11)]"
           >
-            <DropdownMenuLabel className="px-3 py-2.5">
-              <div className="flex flex-col">
-                <span className="font-medium text-[#191a1c]">
-                  {firstName} {lastName}
-                </span>
+            <DropdownMenuLabel className="px-3 py-3">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-9 w-9 border border-[#D8DED9]">
+                  <AvatarFallback className="bg-[#1C1D1F] text-xs font-semibold text-white">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
 
-                <span className="mt-1 truncate text-xs font-normal text-[#77766f]">
-                  {user?.email || "No email available"}
-                </span>
+                <div className="min-w-0">
+                  <span className="block truncate font-semibold text-[#191A1C]">
+                    {firstName} {lastName}
+                  </span>
+
+                  <span className="mt-0.5 block truncate text-xs font-normal text-[#77736B]">
+                    {user?.email ||
+                      "No email available"}
+                  </span>
+                </div>
               </div>
             </DropdownMenuLabel>
 
-            <DropdownMenuSeparator className="bg-[#e7e5df]" />
+            <DropdownMenuSeparator className="bg-[#E4E8E4]" />
 
             <DropdownMenuItem
               onClick={() =>
                 navigate("/settings")
               }
-              className="cursor-pointer rounded-md text-[#55544f] focus:bg-[#f6ecd6] focus:text-[#191a1c]"
+              className="cursor-pointer rounded-lg px-3 py-2.5 text-[#55524D] focus:bg-[#F0F2ED] focus:text-[#191A1C]"
             >
-              <UserRound className="mr-2 h-4 w-4" />
+              <Settings className="mr-2 h-4 w-4 text-[#7E845E]" />
               Profile & Settings
             </DropdownMenuItem>
 
@@ -186,17 +214,17 @@ function Topbar() {
               onClick={() =>
                 navigate("/ai")
               }
-              className="cursor-pointer rounded-md text-[#55544f] focus:bg-[#f6ecd6] focus:text-[#191a1c]"
+              className="cursor-pointer rounded-lg px-3 py-2.5 text-[#55524D] focus:bg-[#F5EBD5] focus:text-[#191A1C]"
             >
-              <Sparkles className="mr-2 h-4 w-4" />
+              <Sparkles className="mr-2 h-4 w-4 text-[#C9952E]" />
               BuildOps AI
             </DropdownMenuItem>
 
-            <DropdownMenuSeparator className="bg-[#e7e5df]" />
+            <DropdownMenuSeparator className="bg-[#E4E8E4]" />
 
             <DropdownMenuItem
               onClick={handleLogout}
-              className="cursor-pointer rounded-md text-[#a9605b] focus:bg-[#f4e8e6] focus:text-[#a9605b]"
+              className="cursor-pointer rounded-lg px-3 py-2.5 text-[#A9605B] focus:bg-[#F4E8E6] focus:text-[#8F4C47]"
             >
               <LogOut className="mr-2 h-4 w-4" />
               Log out
