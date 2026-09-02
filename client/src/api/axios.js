@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api/v1",
+  baseURL: "https://buildops-api-2tgw.onrender.com/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
@@ -52,7 +52,9 @@ api.interceptors.response.use(
     }
 
     // Don't refresh the refresh endpoint itself
-    if (originalRequest?.url?.includes("/auth/refresh")) {
+    if (
+      originalRequest?.url?.includes("/auth/refresh")
+    ) {
       return Promise.reject(error);
     }
 
@@ -66,6 +68,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Queue requests while token is refreshing
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({
@@ -85,7 +88,7 @@ api.interceptors.response.use(
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/v1/auth/refresh",
+        "https://buildops-api-2tgw.onrender.com/api/v1/auth/refresh",
         {
           refreshToken,
         }
@@ -109,7 +112,6 @@ api.interceptors.response.use(
       processQueue(refreshError, null);
 
       localStorage.clear();
-
       window.location.href = "/login";
 
       return Promise.reject(refreshError);
