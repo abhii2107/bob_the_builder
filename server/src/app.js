@@ -12,7 +12,12 @@ const app = express();
 app.use(helmet());
 
 // Enable CORS
-app.use(cors());
+app.use(
+  cors({
+    origin: "buildops-tawny.vercel.app",
+    credentials: true,
+  })
+);
 
 // Logging
 app.use(morgan("dev"));
