@@ -12,13 +12,51 @@ const app = express();
 app.use(helmet());
 
 // Enable CORS
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://buildops-tawny.vercel.app",
+  "https://buildops-git-main-abhii2107s-projects.vercel.app",
+  "https://buildops-qej96dfip-abhii2107s-projects.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "buildops-tawny.vercel.app",
+    origin: (origin, callback) => {
+      // Allow requests with no origin, such as Postman/server-to-server requests
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Allow Vercel preview deployments
+      if (
+        origin.endsWith(".vercel.app")
+      ) {
+        return callback(null, true);
+      }
+
+      return callback(
+        new Error("Not allowed by CORS")
+      );
+    },
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS",
+    ],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
     credentials: true,
   })
 );
-
 // Logging
 app.use(morgan("dev"));
 
